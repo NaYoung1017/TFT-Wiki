@@ -93,14 +93,14 @@ export default async function handler(req, res) {
         const summonerResponse = await apiRequest(summonerUrl);
 
         const puuid = summonerResponse.data.puuid;
-        await delay(1200); // ← 1.2초
+        await delay(1000); // ← 1초
 
         // 매치 ID 목록 조회
         const matchListUrl = `https://asia.api.riotgames.com/tft/match/v1/matches/by-puuid/${puuid}/ids?count=${maxMatches}`;
         const matchListResponse = await apiRequest(matchListUrl);
 
         const matchIds = matchListResponse.data;
-        await delay(1200); // ← 1.2초
+        await delay(1000); // ← 1초
 
         // 각 매치 상세 정보 조회
         for (const matchId of matchIds) {
@@ -109,7 +109,7 @@ export default async function handler(req, res) {
             const matchResponse = await apiRequest(matchUrl);
 
             allMatchData.push(matchResponse.data);
-            await delay(1200); // ← 1.2초
+            await delay(1000); // ← 1초
           } catch (err) {
             console.log("매치 조회 실패:", matchId, err.message);
           }

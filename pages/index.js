@@ -42,7 +42,7 @@ export default function TFTMetaWiki() {
     setCollecting(true);
     try {
       const response = await fetch(
-        "/api/collect-master-data?limit=30&matches=10",
+        "/api/collect-master-data?limit=5&matches=3",
         {
           method: "POST",
         }
@@ -188,7 +188,7 @@ export default function TFTMetaWiki() {
             onClick={collectData}
             disabled={collecting || analyzing}
           >
-            {collecting ? "수집 중..." : "🔄 데이터 수집 (30분 소요)"}
+            {collecting ? "수집 중..." : "🔄 데이터 수집 (1-2분 소요)"}
           </button>
           <button
             className={styles.analyzeBtn}
