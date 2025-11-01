@@ -74,6 +74,7 @@ export default async function handler(req, res) {
       maxPlayers
     );
     console.log("챌린저:", masterPlusPlayers.length);
+    console.log("첫 번째 플레이어 데이터 샘플:", JSON.stringify(masterPlusPlayers[0], null, 2));
 
     await delay(1000); // ← 1초로 증가
 
