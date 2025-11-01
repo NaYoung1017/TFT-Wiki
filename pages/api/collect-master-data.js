@@ -89,19 +89,23 @@ export default async function handler(req, res) {
       try {
         const entry = masterPlusPlayers[i];
 
-        // Summoner ID로 PUUID 조회
-        const summonerUrl = `https://kr.api.riotgames.com/tft/summoner/v1/summoners/${entry.summonerId}`;
-        const summonerResponse = await apiRequest(summonerUrl);
+        // TFT League API 응답에 이미 PUUID가 포함되어 있음!
+        const puuid = entry.puuid;
 
-        const puuid = summonerResponse.data.puuid;
-        await delay(1000); // ← 1초
+        if (!puuid) {
+          console.log("⚠️ PUUID 없음, 건너뜀:", entry);
+          continue;
+        }
+
+        console.log(`플레이어 ${i + 1}: PUUID 확인 완료`);
+        await delay(500); // ← 0.5초 (API 호출 1개 절약했으므로 더 빠르게)
 
         // 매치 ID 목록 조회
         const matchListUrl = `https://asia.api.riotgames.com/tft/match/v1/matches/by-puuid/${puuid}/ids?count=${maxMatches}`;
         const matchListResponse = await apiRequest(matchListUrl);
 
         const matchIds = matchListResponse.data;
-        await delay(1000); // ← 1초
+        await delay(500); // ← 0.5초
 
         // 각 매치 상세 정보 조회
         for (const matchId of matchIds) {
@@ -110,7 +114,7 @@ export default async function handler(req, res) {
             const matchResponse = await apiRequest(matchUrl);
 
             allMatchData.push(matchResponse.data);
-            await delay(1000); // ← 1초
+            await delay(600); // ← 0.6초
           } catch (err) {
             console.log("매치 조회 실패:", matchId, err.message);
           }
