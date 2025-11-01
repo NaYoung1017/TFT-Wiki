@@ -37,9 +37,16 @@ export default async function handler(req, res) {
         } catch (err) {
           const status = err.response?.status;
           console.log(`API 요청 실패 (시도 ${i + 1}/${retries}):`, status, err.message);
+          console.log("요청 URL:", url);
+          console.log("에러 응답:", err.response?.data);
 
           if (status === 403) {
             console.error("❌ 403 에러: API 키가 유효하지 않거나 권한이 없습니다");
+            console.error("가능한 원인:");
+            console.error("  1. API 키가 만료됨 (24시간마다 갱신 필요)");
+            console.error("  2. TFT API 접근 권한 없음");
+            console.error("  3. 요청 URL이 잘못됨");
+            console.error("해결: https://developer.riotgames.com/ 에서 API 키 재발급");
             throw new Error("API 키를 확인하세요 (403 Forbidden)");
           } else if (status === 429) {
             console.log("⚠️ Rate Limit 초과! 10초 대기...");
