@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import Head from "next/head";
 import styles from "../styles/MetaWiki.module.css";
-import { toKoreanTrait, toKoreanChampion, getChampionImageUrl } from "../utils/translations";
+import { getTraitName, getChampionName, getChampionImage, getTraitImage } from "../utils/tftDataLoader";
 import { getSynergyInfo } from "../utils/synergyInfo";
 
 export default function SynergiesPage() {
@@ -173,7 +173,7 @@ export default function SynergiesPage() {
                       <div className={styles.synergyMainInfo}>
                         <div className={styles.synergyTitleRow}>
                           <h3 className={styles.synergyNameBig}>
-                            {synergyInfo ? synergyInfo.name : toKoreanTrait(synergy.name)}
+                            {synergyInfo ? synergyInfo.name : getTraitName(synergy.name)}
                           </h3>
                           <span className={`${styles.tierBadge} ${styles[`tier${tier}`]}`}>
                             {tier}
@@ -208,17 +208,17 @@ export default function SynergiesPage() {
                           <h4 className={styles.infoTitle}>포함 챔피언</h4>
                           <div className={styles.championIconList}>
                             {synergyInfo.champions.map((champ, idx) => (
-                              <div key={idx} className={styles.champIconSmall} title={toKoreanChampion(champ)}>
+                              <div key={idx} className={styles.champIconSmall} title={getChampionName(champ)}>
                                 <img
-                                  src={getChampionImageUrl(champ)}
-                                  alt={toKoreanChampion(champ)}
+                                  src={getChampionImage(champ)}
+                                  alt={getChampionName(champ)}
                                   onError={(e) => {
                                     e.target.style.display = 'none';
                                     e.target.nextSibling.style.display = 'flex';
                                   }}
                                 />
                                 <span style={{display: 'none'}}>
-                                  {toKoreanChampion(champ).slice(0, 1)}
+                                  {getChampionName(champ).slice(0, 1)}
                                 </span>
                               </div>
                             ))}

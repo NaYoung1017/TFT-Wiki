@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import Head from "next/head";
 import styles from "../styles/MetaWiki.module.css";
-import { toKoreanChampion, toKoreanTrait, toKoreanItem, toKoreanAugment, getChampionImageUrl } from "../utils/translations";
+import { getChampionName, getTraitName, getItemName, getChampionImage } from "../utils/tftDataLoader";
 
 export default function TFTMetaWiki() {
   const [activeSection, setActiveSection] = useState("meta");
@@ -265,11 +265,11 @@ export default function TFTMetaWiki() {
                           <div
                             key={idx}
                             className={styles.champIcon}
-                            title={toKoreanChampion(champ.name)}
+                            title={getChampionName(champ.name)}
                           >
                             <img
-                              src={getChampionImageUrl(champ.name)}
-                              alt={toKoreanChampion(champ.name)}
+                              src={getChampionImage(champ.name)}
+                              alt={getChampionName(champ.name)}
                               className={styles.champImage}
                               onError={(e) => {
                                 e.target.style.display = 'none';
@@ -277,7 +277,7 @@ export default function TFTMetaWiki() {
                               }}
                             />
                             <span className={styles.champFallback} style={{display: 'none'}}>
-                              {toKoreanChampion(champ.name).slice(0, 2)}
+                              {getChampionName(champ.name).slice(0, 2)}
                             </span>
                           </div>
                         ))}
@@ -352,8 +352,8 @@ export default function TFTMetaWiki() {
                     <div key={idx} className={styles.championItem}>
                       <div className={styles.championItemIcon}>
                         <img
-                          src={getChampionImageUrl(champ.name)}
-                          alt={toKoreanChampion(champ.name)}
+                          src={getChampionImage(champ.name)}
+                          alt={getChampionName(champ.name)}
                           className={styles.champIconLarge}
                           onError={(e) => {
                             e.target.style.display = 'none';
@@ -361,12 +361,12 @@ export default function TFTMetaWiki() {
                           }}
                         />
                         <span className={styles.champIconLarge} style={{display: 'none', background: 'linear-gradient(135deg, #8b5cf6, #06b6d4)'}}>
-                          {toKoreanChampion(champ.name).slice(0, 2)}
+                          {getChampionName(champ.name).slice(0, 2)}
                         </span>
                       </div>
                       <div className={styles.championItemInfo}>
                         <span className={styles.championItemName}>
-                          {toKoreanChampion(champ.name)}
+                          {getChampionName(champ.name)}
                         </span>
                         <span className={styles.championItemCount}>
                           {champ.count}회 사용
@@ -385,7 +385,7 @@ export default function TFTMetaWiki() {
                 selectedMeta.topItems.map((item, idx) => (
                   <div key={idx} className={styles.itemRecommend}>
                     <span className={styles.itemCombo}>
-                      {item.combo.split(' + ').map(i => toKoreanItem(i)).join(' + ')}
+                      {item.combo.split(' + ').map(i => getItemName(i)).join(' + ')}
                     </span>
                     <span className={styles.itemCount}>({item.count}회)</span>
                   </div>
