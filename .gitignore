@@ -34,8 +34,3 @@ next-env.d.ts
 
 # 데이터 파일 (로컬에서만 생성)
 /data
-
-# DataDragon (임시 파일)
-DataDragon/
-dragontail-*.tgz
-*.tgz
