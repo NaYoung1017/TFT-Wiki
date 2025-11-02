@@ -300,6 +300,22 @@
   font-size: 0.875rem;
   position: relative;
   border: 2px solid rgba(255, 255, 255, 0.2);
+  overflow: hidden;
+}
+
+.champImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.champFallback {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #8b5cf6, #06b6d4);
 }
 
 .champCost {
@@ -573,6 +589,8 @@
   justify-content: center;
   font-weight: 700;
   font-size: 1.25rem;
+  object-fit: cover;
+  overflow: hidden;
 }
 
 .costBadge {
@@ -916,6 +934,37 @@
 
 .footer p {
   margin: 0.5rem 0;
+}
+
+.adminPanel {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(139, 92, 246, 0.1);
+  display: flex;
+  gap: 0.75rem;
+  justify-content: center;
+}
+
+.adminBtn {
+  padding: 0.5rem 1rem;
+  background: rgba(139, 92, 246, 0.1);
+  border: 1px solid rgba(139, 92, 246, 0.2);
+  border-radius: 6px;
+  color: #9ca3af;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.adminBtn:hover:not(:disabled) {
+  background: rgba(139, 92, 246, 0.2);
+  color: #fff;
+  border-color: rgba(139, 92, 246, 0.4);
+}
+
+.adminBtn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
 }
 
 /* ========== 반응형 ========== */

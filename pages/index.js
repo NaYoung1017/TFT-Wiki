@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import Head from "next/head";
 import styles from "../styles/MetaWiki.module.css";
+import { toKoreanChampion, toKoreanTrait, toKoreanItem, toKoreanAugment, getChampionImageUrl } from "../utils/translations";
 
 export default function TFTMetaWiki() {
   const [activeSection, setActiveSection] = useState("meta");
@@ -42,7 +43,7 @@ export default function TFTMetaWiki() {
     setCollecting(true);
     try {
       const response = await fetch(
-        "/api/collect-master-data?limit=5&matches=3",
+        "/api/collect-master-data?limit=20&matches=5",
         {
           method: "POST",
         }
@@ -181,30 +182,6 @@ export default function TFTMetaWiki() {
       </nav>
 
       <main className={styles.main}>
-        {/* 컨트롤 패널 */}
-        <div className={styles.controlPanel}>
-          <button
-            className={styles.collectBtn}
-            onClick={collectData}
-            disabled={collecting || analyzing}
-          >
-            {collecting ? "수집 중..." : "🔄 데이터 수집 (1-2분 소요)"}
-          </button>
-          <button
-            className={styles.analyzeBtn}
-            onClick={analyzeData}
-            disabled={collecting || analyzing}
-          >
-            {analyzing ? "분석 중..." : "📊 데이터 분석"}
-          </button>
-          <button
-            className={styles.refreshBtn}
-            onClick={loadMetaData}
-            disabled={loading}
-          >
-            🔃 새로고침
-          </button>
-        </div>
 
         {/* 메타 랭킹 섹션 */}
         <section id="meta" className={styles.section}>
@@ -288,9 +265,20 @@ export default function TFTMetaWiki() {
                           <div
                             key={idx}
                             className={styles.champIcon}
-                            title={champ.name}
+                            title={toKoreanChampion(champ.name)}
                           >
-                            {champ.name.slice(0, 2)}
+                            <img
+                              src={getChampionImageUrl(champ.name)}
+                              alt={toKoreanChampion(champ.name)}
+                              className={styles.champImage}
+                              onError={(e) => {
+                                e.target.style.display = 'none';
+                                e.target.nextSibling.style.display = 'flex';
+                              }}
+                            />
+                            <span className={styles.champFallback} style={{display: 'none'}}>
+                              {toKoreanChampion(champ.name).slice(0, 2)}
+                            </span>
                           </div>
                         ))}
                     </div>
@@ -363,13 +351,22 @@ export default function TFTMetaWiki() {
                   selectedMeta.topChampions.map((champ, idx) => (
                     <div key={idx} className={styles.championItem}>
                       <div className={styles.championItemIcon}>
-                        <span className={styles.champIconLarge}>
-                          {champ.name.slice(0, 2)}
+                        <img
+                          src={getChampionImageUrl(champ.name)}
+                          alt={toKoreanChampion(champ.name)}
+                          className={styles.champIconLarge}
+                          onError={(e) => {
+                            e.target.style.display = 'none';
+                            e.target.nextSibling.style.display = 'flex';
+                          }}
+                        />
+                        <span className={styles.champIconLarge} style={{display: 'none', background: 'linear-gradient(135deg, #8b5cf6, #06b6d4)'}}>
+                          {toKoreanChampion(champ.name).slice(0, 2)}
                         </span>
                       </div>
                       <div className={styles.championItemInfo}>
                         <span className={styles.championItemName}>
-                          {champ.name}
+                          {toKoreanChampion(champ.name)}
                         </span>
                         <span className={styles.championItemCount}>
                           {champ.count}회 사용
@@ -387,7 +384,9 @@ export default function TFTMetaWiki() {
               {selectedMeta.topItems &&
                 selectedMeta.topItems.map((item, idx) => (
                   <div key={idx} className={styles.itemRecommend}>
-                    <span className={styles.itemCombo}>{item.combo}</span>
+                    <span className={styles.itemCombo}>
+                      {item.combo.split(' + ').map(i => toKoreanItem(i)).join(' + ')}
+                    </span>
                     <span className={styles.itemCount}>({item.count}회)</span>
                   </div>
                 ))}
@@ -399,7 +398,7 @@ export default function TFTMetaWiki() {
                 {selectedMeta.topAugments &&
                   selectedMeta.topAugments.map((aug, idx) => (
                     <span key={idx} className={styles.augmentTag}>
-                      {aug.name} ({aug.count}회)
+                      {toKoreanAugment(aug.name)} ({aug.count}회)
                     </span>
                   ))}
               </div>
@@ -420,6 +419,24 @@ export default function TFTMetaWiki() {
       <footer className={styles.footer}>
         <p>TFT META WIKI © 2025 | Master+ Data Analysis</p>
         <p>데이터는 수동으로 업데이트됩니다</p>
+
+        {/* 관리자 패널 */}
+        <div className={styles.adminPanel}>
+          <button
+            className={styles.adminBtn}
+            onClick={collectData}
+            disabled={collecting || analyzing}
+          >
+            {collecting ? "수집 중..." : "데이터 수집"}
+          </button>
+          <button
+            className={styles.adminBtn}
+            onClick={analyzeData}
+            disabled={collecting || analyzing}
+          >
+            {analyzing ? "분석 중..." : "데이터 분석"}
+          </button>
+        </div>
       </footer>
     </div>
   );

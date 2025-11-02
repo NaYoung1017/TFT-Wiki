@@ -12,11 +12,11 @@ export default async function handler(req, res) {
     if (matchData.length === 0) {
       return res.status(400).json({
         error: "분석할 데이터가 없습니다",
-        message: "/api/collect-master-data를 먼저 실행하세요",
+        message: "먼저 데이터를 수집하세요",
       });
     }
 
-    console.log("분석할 매치 수:", matchData.length);
+    console.log(`분석 중: ${matchData.length}개 매치`);
 
     // 메타 컴포지션 패턴 분석
     const compPatterns = {};
@@ -217,10 +217,7 @@ export default async function handler(req, res) {
       lastAnalyzed: new Date(),
     };
 
-    console.log("=== 분석 완료 ===");
-    console.log("메타 컴포지션:", metaComps.length);
-    console.log("시너지 통계:", synergyRankings.length);
-    console.log("증강 통계:", augmentRankings.length);
+    console.log(`✓ 분석 완료: 메타 ${metaComps.length}개, 시너지 ${synergyRankings.length}개, 증강 ${augmentRankings.length}개`);
 
     return res.status(200).json({
       success: true,
@@ -232,9 +229,8 @@ export default async function handler(req, res) {
     });
   } catch (error) {
     console.error("❌ 분석 에러:", error.message);
-
     return res.status(500).json({
-      error: "데이터 분석 중 오류 발생",
+      error: "데이터 분석 실패",
       details: error.message,
     });
   }
