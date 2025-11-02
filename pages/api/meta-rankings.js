@@ -23,7 +23,7 @@ export default async function handler(req, res) {
       metaComps: analyzedData.metaComps.slice(0, limit),
       totalMatches: analyzedData.totalMatches,
       lastAnalyzed: analyzedData.lastAnalyzed,
-      lastUpdate: global.lastUpdateTime,
+      lastUpdate: analyzedData.savedAt || analyzedData.lastAnalyzed,
     });
   } catch (error) {
     return res.status(500).json({

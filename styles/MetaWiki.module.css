@@ -957,25 +957,28 @@
   box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4);
 }
 
-/* ========== 시너지 그리드 ========== */
-.synergyGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+/* ========== 시너지 세로 리스트 ========== */
+.synergyList {
+  display: flex;
+  flex-direction: column;
   gap: 1.5rem;
 }
 
-.synergyCard {
+.synergyRow {
   background: rgba(30, 35, 60, 0.6);
   backdrop-filter: blur(10px);
   border: 2px solid rgba(139, 92, 246, 0.2);
   border-radius: 16px;
-  padding: 1.5rem;
+  padding: 2rem;
   transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
+  display: flex;
+  gap: 2rem;
+  align-items: flex-start;
 }
 
-.synergyCard::before {
+.synergyRow::before {
   content: "";
   position: absolute;
   top: 0;
@@ -987,97 +990,209 @@
   transition: opacity 0.3s ease;
 }
 
-.synergyCard:hover {
+.synergyRow:hover {
   transform: translateY(-4px);
   border-color: #8b5cf6;
   box-shadow: 0 12px 24px rgba(139, 92, 246, 0.3);
 }
 
-.synergyCard:hover::before {
+.synergyRow:hover::before {
   opacity: 1;
 }
 
-.synergyCard.tierS {
+.synergyRow.tierS {
   border-color: rgba(212, 175, 55, 0.4);
 }
 
-.synergyCard.tierS:hover {
+.synergyRow.tierS:hover {
   border-color: #d4af37;
   box-shadow: 0 12px 24px rgba(212, 175, 55, 0.4);
 }
 
-.synergyCard.tierA {
+.synergyRow.tierA {
   border-color: rgba(139, 92, 246, 0.4);
 }
 
-.synergyCard.tierB {
+.synergyRow.tierB {
   border-color: rgba(6, 182, 212, 0.4);
 }
 
-.synergyCard.tierC {
+.synergyRow.tierC {
   border-color: rgba(107, 114, 128, 0.4);
 }
 
-.synergyHeader {
+/* 왼쪽 섹션: 랭킹 & 기본 정보 */
+.synergyLeft {
   display: flex;
-  justify-content: space-between;
+  gap: 1.5rem;
   align-items: flex-start;
-  margin-bottom: 1.5rem;
+  min-width: 300px;
 }
 
-.synergyTitle {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.synergyName {
-  font-size: 1.5rem;
-  font-weight: 800;
-  color: #fff;
-  margin: 0;
-}
-
-.synergyRank {
-  font-size: 1.75rem;
+.synergyRankBig {
+  font-size: 3rem;
   font-weight: 900;
   background: linear-gradient(135deg, #d4af37, #ffd700);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+  min-width: 80px;
+  text-align: center;
 }
 
-.synergyStats {
+.synergyMainInfo {
+  flex: 1;
+}
+
+.synergyTitleRow {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.synergyNameBig {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: #fff;
+  margin: 0;
+}
+
+.synergyDescription {
+  color: #9ca3af;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* 중앙 섹션: 효과 & 챔피언 */
+.synergyCenterInfo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.synergyTiers {
+  background: rgba(0, 0, 0, 0.2);
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.infoTitle {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #8b5cf6;
+  margin: 0 0 0.75rem 0;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.tierEffectList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.tierEffectItem {
+  display: flex;
+  gap: 0.75rem;
+  align-items: baseline;
+}
+
+.tierCount {
+  font-weight: 700;
+  color: #d4af37;
+  min-width: 32px;
+}
+
+.tierEffect {
+  color: #d1d5db;
+  font-size: 0.9rem;
+}
+
+.synergyChampions {
+  background: rgba(0, 0, 0, 0.2);
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.championIconList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.champIconSmall {
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(135deg, #8b5cf6, #06b6d4);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.75rem;
+  position: relative;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.champIconSmall:hover {
+  transform: scale(1.1);
+  border-color: #d4af37;
+  z-index: 10;
+}
+
+.champIconSmall img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.champIconSmall span {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #8b5cf6, #06b6d4);
+}
+
+/* 오른쪽 섹션: 통계 */
+.synergyStatsRight {
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
-  margin-bottom: 1.5rem;
+  min-width: 180px;
+  background: rgba(0, 0, 0, 0.2);
+  padding: 1.5rem;
+  border-radius: 12px;
+  border: 1px solid rgba(139, 92, 246, 0.1);
 }
 
-.statRow {
+.statBox {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0.5rem 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  flex-direction: column;
+  gap: 0.25rem;
 }
 
-.statRow:last-child {
-  border-bottom: none;
-}
-
-.statRow .statLabel {
-  font-size: 0.875rem;
+.statBox .statLabel {
+  font-size: 0.75rem;
   color: #9ca3af;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
-.statRow .statValue {
-  font-size: 1.125rem;
+.statBox .statValue {
+  font-size: 1.25rem;
   font-weight: 700;
   color: #fff;
 }
 
-.statRow .statValue.highlight {
+.statBox .statValue.highlight {
   background: linear-gradient(135deg, #10b981, #06b6d4);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -1085,14 +1200,11 @@
   font-size: 1.5rem;
 }
 
-.synergyFooter {
-  padding-top: 1rem;
+.synergyGames {
+  margin-top: 0.5rem;
+  padding-top: 0.75rem;
   border-top: 1px solid rgba(139, 92, 246, 0.2);
-  display: flex;
-  justify-content: center;
-}
-
-.gamesPlayed {
+  text-align: center;
   font-size: 0.875rem;
   color: #6b7280;
   font-weight: 500;

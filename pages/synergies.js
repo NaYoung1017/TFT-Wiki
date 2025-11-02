@@ -1,13 +1,14 @@
 import { useState, useEffect } from "react";
 import Head from "next/head";
 import styles from "../styles/MetaWiki.module.css";
-import { toKoreanTrait } from "../utils/translations";
+import { toKoreanTrait, toKoreanChampion, getChampionImageUrl } from "../utils/translations";
+import { getSynergyInfo } from "../utils/synergyInfo";
 
 export default function SynergiesPage() {
   const [synergies, setSynergies] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [sortBy, setSortBy] = useState("avgPlacement"); // avgPlacement, pickRate, winRate
+  const [sortBy, setSortBy] = useState("avgPlacement");
 
   useEffect(() => {
     loadSynergies();
@@ -55,13 +56,13 @@ export default function SynergiesPage() {
     <div className={styles.container}>
       <Head>
         <title>시너지 통계 - TFT META WIKI</title>
-        <meta name="description" content="TFT 시즌 15 시너지 통계" />
+        <meta name="description" content="TFT 시즌 15 시너지 효과 및 통계" />
       </Head>
 
       {/* 네비게이션 바 */}
       <nav className={styles.navbar}>
         <div className={styles.navContainer}>
-          <div className={styles.logo} onClick={() => (window.location.href = "/")}>
+          <div className={styles.logo} onClick={() => (window.location.href = "/")} style={{cursor: 'pointer'}}>
             <span className={styles.logoIcon}>🏆</span>
             <span className={styles.logoText}>TFT META WIKI</span>
             <span className={styles.season}>S15</span>
@@ -103,10 +104,10 @@ export default function SynergiesPage() {
           <div className={styles.sectionHeader}>
             <h1 className={styles.sectionTitle}>
               <span className={styles.titleIcon}>⚔️</span>
-              시너지 통계
+              시너지 효과 및 통계
             </h1>
             <p className={styles.sectionSubtitle}>
-              마스터+ 티어 기준 시너지별 성적 분석
+              마스터+ 티어 기준 시너지별 효과, 포함 챔피언, 성적 분석
             </p>
           </div>
 
@@ -156,61 +157,99 @@ export default function SynergiesPage() {
           )}
 
           {!loading && !error && sortedSynergies.length > 0 && (
-            <div className={styles.synergyGrid}>
+            <div className={styles.synergyList}>
               {sortedSynergies.map((synergy, index) => {
                 const tier = getTierClass(synergy.avgPlacement);
+                const synergyInfo = getSynergyInfo(synergy.name);
+
                 return (
                   <div
                     key={index}
-                    className={`${styles.synergyCard} ${styles[`tier${tier}`]}`}
+                    className={`${styles.synergyRow} ${styles[`tier${tier}`]}`}
                   >
-                    <div className={styles.synergyHeader}>
-                      <div className={styles.synergyTitle}>
-                        <h3 className={styles.synergyName}>
-                          {toKoreanTrait(synergy.name)}
-                        </h3>
-                        <span
-                          className={`${styles.tierBadge} ${
-                            styles[`tier${tier}`]
-                          }`}
-                        >
-                          {tier}
-                        </span>
+                    {/* 왼쪽: 랭킹 & 기본 정보 */}
+                    <div className={styles.synergyLeft}>
+                      <div className={styles.synergyRankBig}>#{index + 1}</div>
+                      <div className={styles.synergyMainInfo}>
+                        <div className={styles.synergyTitleRow}>
+                          <h3 className={styles.synergyNameBig}>
+                            {synergyInfo ? synergyInfo.name : toKoreanTrait(synergy.name)}
+                          </h3>
+                          <span className={`${styles.tierBadge} ${styles[`tier${tier}`]}`}>
+                            {tier}
+                          </span>
+                        </div>
+                        {synergyInfo && (
+                          <p className={styles.synergyDescription}>
+                            {synergyInfo.description}
+                          </p>
+                        )}
                       </div>
-                      <div className={styles.synergyRank}>#{index + 1}</div>
                     </div>
 
-                    <div className={styles.synergyStats}>
-                      <div className={styles.statRow}>
+                    {/* 중앙: 효과 & 챔피언 */}
+                    <div className={styles.synergyCenterInfo}>
+                      {synergyInfo && synergyInfo.tiers && (
+                        <div className={styles.synergyTiers}>
+                          <h4 className={styles.infoTitle}>시너지 효과</h4>
+                          <div className={styles.tierEffectList}>
+                            {synergyInfo.tiers.map((tierInfo, idx) => (
+                              <div key={idx} className={styles.tierEffectItem}>
+                                <span className={styles.tierCount}>({tierInfo.count})</span>
+                                <span className={styles.tierEffect}>{tierInfo.effect}</span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {synergyInfo && synergyInfo.champions && (
+                        <div className={styles.synergyChampions}>
+                          <h4 className={styles.infoTitle}>포함 챔피언</h4>
+                          <div className={styles.championIconList}>
+                            {synergyInfo.champions.map((champ, idx) => (
+                              <div key={idx} className={styles.champIconSmall} title={toKoreanChampion(champ)}>
+                                <img
+                                  src={getChampionImageUrl(champ)}
+                                  alt={toKoreanChampion(champ)}
+                                  onError={(e) => {
+                                    e.target.style.display = 'none';
+                                    e.target.nextSibling.style.display = 'flex';
+                                  }}
+                                />
+                                <span style={{display: 'none'}}>
+                                  {toKoreanChampion(champ).slice(0, 1)}
+                                </span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* 오른쪽: 통계 */}
+                    <div className={styles.synergyStatsRight}>
+                      <div className={styles.statBox}>
                         <span className={styles.statLabel}>평균 등수</span>
                         <span className={`${styles.statValue} ${styles.highlight}`}>
                           {synergy.avgPlacement}위
                         </span>
                       </div>
-                      <div className={styles.statRow}>
+                      <div className={styles.statBox}>
                         <span className={styles.statLabel}>승률</span>
-                        <span className={styles.statValue}>
-                          {synergy.winRate}%
-                        </span>
+                        <span className={styles.statValue}>{synergy.winRate}%</span>
                       </div>
-                      <div className={styles.statRow}>
+                      <div className={styles.statBox}>
                         <span className={styles.statLabel}>픽률</span>
-                        <span className={styles.statValue}>
-                          {synergy.pickRate}%
-                        </span>
+                        <span className={styles.statValue}>{synergy.pickRate}%</span>
                       </div>
-                      <div className={styles.statRow}>
-                        <span className={styles.statLabel}>Top 4 비율</span>
-                        <span className={styles.statValue}>
-                          {synergy.top4Rate}%
-                        </span>
+                      <div className={styles.statBox}>
+                        <span className={styles.statLabel}>Top 4</span>
+                        <span className={styles.statValue}>{synergy.top4Rate}%</span>
                       </div>
-                    </div>
-
-                    <div className={styles.synergyFooter}>
-                      <span className={styles.gamesPlayed}>
-                        {synergy.games}게임 플레이
-                      </span>
+                      <div className={styles.synergyGames}>
+                        {synergy.games}게임
+                      </div>
                     </div>
                   </div>
                 );
