@@ -172,6 +172,14 @@ export default function SynergiesPage() {
                       <div className={styles.synergyRankBig}>#{index + 1}</div>
                       <div className={styles.synergyMainInfo}>
                         <div className={styles.synergyTitleRow}>
+                          {getTraitImage(synergy.name) && (
+                            <img
+                              src={getTraitImage(synergy.name)}
+                              alt={synergyInfo ? synergyInfo.name : getTraitName(synergy.name)}
+                              className={styles.synergyIcon}
+                              style={{width: '40px', height: '40px', marginRight: '12px'}}
+                            />
+                          )}
                           <h3 className={styles.synergyNameBig}>
                             {synergyInfo ? synergyInfo.name : getTraitName(synergy.name)}
                           </h3>

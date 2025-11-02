@@ -147,11 +147,11 @@
   font-size: 1rem;
 }
 
-/* ========== 메타 카드 ========== */
+/* ========== 메타 카드 (세로 정렬) ========== */
 .metaGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  gap: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
 }
 
 .metaCard {
@@ -279,6 +279,43 @@
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+}
+
+.traitIcons {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+.traitIcon {
+  width: 48px;
+  height: 48px;
+  background: rgba(139, 92, 246, 0.2);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.875rem;
+  position: relative;
+  border: 2px solid rgba(139, 92, 246, 0.4);
+  overflow: hidden;
+}
+
+.traitImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.traitFallback {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #8b5cf6, #06b6d4);
 }
 
 .championIcons {

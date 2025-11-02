@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import Head from "next/head";
 import styles from "../styles/MetaWiki.module.css";
-import { getChampionName, getTraitName, getItemName, getChampionImage } from "../utils/tftDataLoader";
+import { getChampionName, getTraitName, getItemName, getChampionImage, getAugmentName, getTraitImage } from "../utils/tftDataLoader";
 
 export default function TFTMetaWiki() {
   const [activeSection, setActiveSection] = useState("meta");
@@ -116,6 +116,15 @@ export default function TFTMetaWiki() {
     if (place <= 3.5) return "S";
     if (place <= 4.0) return "A";
     return "B";
+  };
+
+  // 메타 이름을 한글로 변환 (시너지 조합)
+  const getKoreanMetaName = (meta) => {
+    if (meta.traits && meta.traits.length > 0) {
+      return meta.traits.map(t => getTraitName(t)).join(" + ");
+    }
+    // fallback: meta.name에서 직접 변환
+    return meta.name.split(" + ").map(t => getTraitName(t)).join(" + ");
   };
 
   return (
@@ -236,7 +245,29 @@ export default function TFTMetaWiki() {
                       </span>
                     </div>
 
-                    <h3 className={styles.metaName}>{meta.name}</h3>
+                    <h3 className={styles.metaName}>{getKoreanMetaName(meta)}</h3>
+
+                    {/* 시너지 아이콘 */}
+                    {meta.traits && meta.traits.length > 0 && (
+                      <div className={styles.traitIcons}>
+                        {meta.traits.map((trait, idx) => (
+                          <div key={idx} className={styles.traitIcon} title={getTraitName(trait)}>
+                            <img
+                              src={getTraitImage(trait)}
+                              alt={getTraitName(trait)}
+                              className={styles.traitImage}
+                              onError={(e) => {
+                                e.target.style.display = 'none';
+                                e.target.nextSibling.style.display = 'flex';
+                              }}
+                            />
+                            <span className={styles.traitFallback} style={{display: 'none'}}>
+                              {getTraitName(trait).slice(0, 2)}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
 
                     <div className={styles.metaStats}>
                       <div className={styles.statItem}>
@@ -309,7 +340,7 @@ export default function TFTMetaWiki() {
             </button>
 
             <div className={styles.modalHeader}>
-              <h2 className={styles.modalTitle}>{selectedMeta.name}</h2>
+              <h2 className={styles.modalTitle}>{getKoreanMetaName(selectedMeta)}</h2>
               <div className={styles.modalBadges}>
                 <span
                   className={`${styles.tierBadge} ${
@@ -398,7 +429,7 @@ export default function TFTMetaWiki() {
                 {selectedMeta.topAugments &&
                   selectedMeta.topAugments.map((aug, idx) => (
                     <span key={idx} className={styles.augmentTag}>
-                      {toKoreanAugment(aug.name)} ({aug.count}회)
+                      {getAugmentName(aug.name)} ({aug.count}회)
                     </span>
                   ))}
               </div>

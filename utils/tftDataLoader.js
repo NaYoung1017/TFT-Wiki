@@ -105,6 +105,17 @@ export function getItemImage(itemId) {
 }
 
 /**
+ * 증강 한글 이름 가져오기
+ */
+export function getAugmentName(augmentId) {
+  // 증강 데이터는 복잡해서 기본적으로 ID 반환
+  // 필요시 augmentData에서 검색 가능
+  const augments = Object.values(augmentData.data);
+  const augment = augments.find(a => a.id === augmentId || a.name === augmentId);
+  return augment ? augment.name : augmentId;
+}
+
+/**
  * 모든 챔피언 데이터 가져오기
  */
 export function getAllChampions() {
@@ -136,6 +147,7 @@ export default {
   getTraitImage,
   getItemName,
   getItemImage,
+  getAugmentName,
   getAllChampions,
   getAllTraits,
   getChampionsByTrait,
