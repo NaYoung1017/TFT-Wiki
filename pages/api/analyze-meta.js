@@ -1,3 +1,5 @@
+import { loadMatchData, saveAnalyzedData } from "../../utils/dataStorage";
+
 // 수집된 데이터를 분석하여 메타 통계 생성
 export default async function handler(req, res) {
   if (req.method !== "POST") {
@@ -7,7 +9,8 @@ export default async function handler(req, res) {
   console.log("=== 메타 분석 시작 ===");
 
   try {
-    const matchData = global.masterMatchData || [];
+    // 파일에서 로드 시도, 없으면 메모리에서
+    let matchData = loadMatchData() || global.masterMatchData || [];
 
     if (matchData.length === 0) {
       return res.status(400).json({
@@ -208,7 +211,7 @@ export default async function handler(req, res) {
       .sort((a, b) => parseFloat(a.avgPlacement) - parseFloat(b.avgPlacement));
 
     // 분석 결과 저장
-    global.analyzedData = {
+    const analyzedData = {
       metaComps,
       synergyRankings,
       augmentRankings,
@@ -216,6 +219,12 @@ export default async function handler(req, res) {
       totalMatches: matchData.length,
       lastAnalyzed: new Date(),
     };
+
+    // 파일로 저장
+    saveAnalyzedData(analyzedData);
+
+    // 메모리에도 저장 (하위 호환성)
+    global.analyzedData = analyzedData;
 
     console.log(`✓ 분석 완료: 메타 ${metaComps.length}개, 시너지 ${synergyRankings.length}개, 증강 ${augmentRankings.length}개`);
 

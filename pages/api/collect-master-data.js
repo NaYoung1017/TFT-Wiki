@@ -1,4 +1,5 @@
 import axios from "axios";
+import { saveMatchData } from "../../utils/dataStorage";
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {
@@ -104,6 +105,10 @@ export default async function handler(req, res) {
 
     console.log(`✓ 수집 완료: ${allMatchData.length}개 매치`);
 
+    // 데이터를 파일로 저장
+    saveMatchData(allMatchData);
+
+    // 메모리에도 저장 (하위 호환성)
     global.masterMatchData = allMatchData;
     global.lastUpdateTime = new Date();
 

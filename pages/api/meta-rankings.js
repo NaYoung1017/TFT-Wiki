@@ -1,3 +1,5 @@
+import { loadAnalyzedData } from "../../utils/dataStorage";
+
 // 메타 랭킹 조회 API
 export default async function handler(req, res) {
   if (req.method !== "GET") {
@@ -5,13 +7,13 @@ export default async function handler(req, res) {
   }
 
   try {
-    const analyzedData = global.analyzedData;
+    // 파일에서 로드 시도, 없으면 메모리에서
+    const analyzedData = loadAnalyzedData() || global.analyzedData;
 
     if (!analyzedData) {
       return res.status(404).json({
         error: "분석된 데이터가 없습니다",
-        message:
-          "/api/collect-master-data와 /api/analyze-meta를 먼저 실행하세요",
+        message: "먼저 데이터를 수집하고 분석하세요",
       });
     }
 

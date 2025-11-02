@@ -1,3 +1,5 @@
+import { loadAnalyzedData } from "../../utils/dataStorage";
+
 // 증강 통계 조회 API
 export default async function handler(req, res) {
   if (req.method !== "GET") {
@@ -5,7 +7,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    const analyzedData = global.analyzedData;
+    const analyzedData = loadAnalyzedData() || global.analyzedData;
 
     if (!analyzedData) {
       return res.status(404).json({
