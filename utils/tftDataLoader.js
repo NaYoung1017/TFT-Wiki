@@ -54,8 +54,8 @@ export function getChampionImage(championId) {
   if (!champ || !champ.image) return null;
 
   // public/images/champions/ 경로 사용
-  const imageName = champ.image.replace('.TFT_Set15.png', '.png').replace('TFT15_', '');
-  return `/images/champions/${imageName}`;
+  // 파일명 형식: TFT15_ChampionName.TFT_Set15.jpg
+  return `/images/champions/${champ.image.replace('.png', '.jpg')}`;
 }
 
 /**
