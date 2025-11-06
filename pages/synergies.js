@@ -367,6 +367,15 @@ export default function SynergiesPage() {
                                 >
                                   {getChampionName(champ).slice(0, 2)}
                                 </span>
+                                {cost && (
+                                  <span
+                                    className={`${styles.championCostBadge} ${
+                                      styles[`cost${cost}`]
+                                    }`}
+                                  >
+                                    {cost}
+                                  </span>
+                                )}
                               </div>
                               <span className={styles.championName}>
                                 {getChampionName(champ)}
