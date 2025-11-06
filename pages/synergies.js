@@ -183,11 +183,6 @@ export default function SynergiesPage() {
               {sortedSynergies.map((synergy, index) => {
                 const synergyInfo = getSynergyInfo(synergy.name);
 
-                // 디버깅: 시너지 이름과 매칭 결과 확인
-                if (!synergyInfo) {
-                  console.log('시너지 정보 없음:', synergy.name);
-                }
-
                 return (
                   <div
                     key={index}

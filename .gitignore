@@ -34,3 +34,16 @@ next-env.d.ts
 
 # 데이터 파일 (로컬에서만 생성)
 /data
+
+# 백업 파일
+*.backup
+*.bak
+*.old
+*~
+
+# Claude Code
+.claude/
+
+# 대용량 데이터 파일
+champion_data.json
+tft_full_data.json
