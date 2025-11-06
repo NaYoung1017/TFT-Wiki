@@ -51,6 +51,14 @@
   border: 2px solid rgba(255, 255, 255, 0.2);
   flex-shrink: 0;
   box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+  overflow: hidden;
+}
+
+/* 아이템 이미지 */
+.itemImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 /* 아이템 정보 영역 */

@@ -173,7 +173,15 @@ export default function ItemsPage() {
 
                 {/* 아이템 아이콘 */}
                 <div className={itemStyles.itemIconLarge}>
-                  {item.name.slice(0, 2)}
+                  {item.image ? (
+                    <img
+                      src={item.image}
+                      alt={item.name}
+                      className={itemStyles.itemImage}
+                    />
+                  ) : (
+                    item.name.slice(0, 2)
+                  )}
                 </div>
 
                 {/* 아이템 정보 */}
@@ -239,7 +247,15 @@ export default function ItemsPage() {
 
                 {/* 아이템 아이콘 */}
                 <div className={itemStyles.itemIconLarge}>
-                  {item.name.slice(0, 2)}
+                  {item.image ? (
+                    <img
+                      src={item.image}
+                      alt={item.name}
+                      className={itemStyles.itemImage}
+                    />
+                  ) : (
+                    item.name.slice(0, 2)
+                  )}
                 </div>
 
                 {/* 아이템 정보 */}
