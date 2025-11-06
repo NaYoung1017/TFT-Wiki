@@ -1,0 +1,228 @@
+/* ========== 아이템 페이지 전용 스타일 ========== */
+
+/* 아이템 리스트 컨테이너 */
+.itemListHorizontal {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* 아이템 행 (가로 레이아웃) */
+.itemRowHorizontal {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  background: rgba(10, 14, 39, 0.6);
+  border: 1px solid rgba(139, 92, 246, 0.2);
+  border-radius: 12px;
+  padding: 1.25rem 1.5rem;
+  transition: all 0.3s ease;
+}
+
+.itemRowHorizontal:hover {
+  border-color: #8b5cf6;
+  box-shadow: 0 4px 16px rgba(139, 92, 246, 0.2);
+  transform: translateY(-2px);
+}
+
+/* 아이템 순위 */
+.itemRank {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #8b5cf6;
+  min-width: 60px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+/* 아이템 아이콘 */
+.itemIconLarge {
+  width: 60px;
+  height: 60px;
+  min-width: 60px;
+  background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 1.3rem;
+  color: #fff;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+}
+
+/* 아이템 정보 영역 */
+.itemInfo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+/* 아이템 이름 */
+.itemNameLarge {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #fff;
+  margin: 0;
+}
+
+/* 아이템 효과 설명 */
+.itemEffectText {
+  color: #c7d2fe;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* 조합법 영역 */
+.itemComponentsInline {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+/* 조합 재료 뱃지 */
+.componentBadge {
+  background: rgba(139, 92, 246, 0.2);
+  border: 1px solid rgba(139, 92, 246, 0.4);
+  border-radius: 6px;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #e0e7ff;
+  transition: all 0.2s ease;
+}
+
+.componentBadge:hover {
+  background: rgba(139, 92, 246, 0.3);
+  border-color: rgba(139, 92, 246, 0.6);
+}
+
+/* 더하기 기호 */
+.componentPlus {
+  color: #8b5cf6;
+  font-weight: 700;
+  font-size: 1.1rem;
+  margin: 0 0.25rem;
+}
+
+/* 통계 영역 */
+.itemStatsInline {
+  display: flex;
+  gap: 2rem;
+  margin-left: auto;
+  flex-shrink: 0;
+  padding-left: 1.5rem;
+  border-left: 1px solid rgba(139, 92, 246, 0.2);
+}
+
+/* 개별 통계 박스 */
+.statBoxInline {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  min-width: 80px;
+}
+
+/* 통계 라벨 */
+.statLabelInline {
+  font-size: 0.75rem;
+  color: #a5b4fc;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* 통계 값 */
+.statValueInline {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+/* 상징 아이템 플레이스홀더 */
+.emblemPlaceholder {
+  color: #8b5cf6;
+  font-size: 0.9rem;
+  font-weight: 600;
+  padding: 0.5rem 1rem;
+  background: rgba(139, 92, 246, 0.1);
+  border-radius: 8px;
+  border: 1px solid rgba(139, 92, 246, 0.3);
+}
+
+/* 반응형 디자인 */
+@media (max-width: 1200px) {
+  .itemStatsInline {
+    gap: 1.5rem;
+  }
+
+  .statBoxInline {
+    min-width: 70px;
+  }
+}
+
+@media (max-width: 968px) {
+  .itemRowHorizontal {
+    flex-wrap: wrap;
+  }
+
+  .itemStatsInline {
+    width: 100%;
+    margin-left: 0;
+    padding-left: 0;
+    border-left: none;
+    border-top: 1px solid rgba(139, 92, 246, 0.2);
+    padding-top: 1rem;
+    justify-content: space-around;
+  }
+}
+
+@media (max-width: 640px) {
+  .itemRowHorizontal {
+    gap: 1rem;
+    padding: 1rem;
+  }
+
+  .itemRank {
+    min-width: 40px;
+    font-size: 1.2rem;
+  }
+
+  .itemIconLarge {
+    width: 50px;
+    height: 50px;
+    min-width: 50px;
+    font-size: 1.1rem;
+  }
+
+  .itemNameLarge {
+    font-size: 1.1rem;
+  }
+
+  .itemEffectText {
+    font-size: 0.85rem;
+  }
+
+  .itemStatsInline {
+    gap: 1rem;
+  }
+
+  .statBoxInline {
+    min-width: 60px;
+  }
+
+  .statLabelInline {
+    font-size: 0.7rem;
+  }
+
+  .statValueInline {
+    font-size: 1rem;
+  }
+}

@@ -33,7 +33,10 @@ export const SYNERGY_INFO = {
       "전투 시작 시 소울 파이터가 매초 공격력과 주문력을 얻습니다. 8초 후 입힌 피해량의 일부만큼 고정 피해를 추가로 입힙니다.",
     tiers: [
       { count: 2, effect: "체력 +120, 초당 공격력/주문력 +1%, 피해증폭 +10%" },
-      { count: 4, effect: "체력 +240, 초당 공격력/주문력 +2.5%, 피해증폭 +16%" },
+      {
+        count: 4,
+        effect: "체력 +240, 초당 공격력/주문력 +2.5%, 피해증폭 +16%",
+      },
       { count: 6, effect: "체력 +425, 초당 공격력/주문력 +4%, 피해증폭 +22%" },
       { count: 8, effect: "체력 +600, 초당 공격력/주문력 +4%, 피해증폭 +28%" },
     ],
@@ -90,9 +93,18 @@ export const SYNERGY_INFO = {
       "크루 챔피언이 배치한 크루 멤버 1명당 체력 및 공격 속도를 6% 얻습니다. 3성 크루 챔피언 1명당 추가 효과를 얻습니다.",
     tiers: [
       { count: 2, effect: "크루 멤버당 체력 및 공격 속도 +6%" },
-      { count: 3, effect: "크루 멤버당 체력 및 공격 속도 +6%, 1개 유닛 추가 효과" },
-      { count: 4, effect: "크루 멤버당 체력 및 공격 속도 +6%, 2개 유닛 추가 효과" },
-      { count: 5, effect: "크루 멤버당 체력 및 공격 속도 +6%, 5명 3성 시 즉시 승리" },
+      {
+        count: 3,
+        effect: "크루 멤버당 체력 및 공격 속도 +6%, 1개 유닛 추가 효과",
+      },
+      {
+        count: 4,
+        effect: "크루 멤버당 체력 및 공격 속도 +6%, 2개 유닛 추가 효과",
+      },
+      {
+        count: 5,
+        effect: "크루 멤버당 체력 및 공격 속도 +6%, 5명 3성 시 즉시 승리",
+      },
     ],
     champions: ["Malphite", "Sivir", "Shen", "Ziggs", "TwistedFate"],
   },
@@ -192,22 +204,14 @@ export const SYNERGY_INFO = {
       { count: 6, effect: "주문력 +60, 최대 체력 피해 +4%" },
       { count: 8, effect: "주문력 +100, 최대 체력 피해 +6%" },
     ],
-    champions: [
-      "Lucian",
-      "Kennen",
-      "Lux",
-      "Swain",
-      "Ahri",
-      "Karma",
-      "Gwen",
-      "Ekko",
-    ],
+    champions: ["Lucian", "Kennen", "Lux", "Swain", "Ahri", "Karma", "Gwen"],
   },
 
   // 봉쇄자 (Protector)
   Protector: {
     name: "봉쇄자",
-    description: "봉쇄자가 최대 체력에 비례한 보호막을 얻습니다. 아군에게도 보호막을 부여합니다.",
+    description:
+      "봉쇄자가 최대 체력에 비례한 보호막을 얻습니다. 아군에게도 보호막을 부여합니다.",
     tiers: [
       { count: 2, effect: "최대 체력의 18% 보호막" },
       { count: 4, effect: "최대 체력의 28% 보호막" },
@@ -219,11 +223,15 @@ export const SYNERGY_INFO = {
   // 요새 (Bastion)
   Bastion: {
     name: "요새",
-    description: "아군이 방어력과 마법 저항력을 얻습니다. 요새는 더 많이 얻으며 초반 10초간 2배 효과를 받습니다.",
+    description:
+      "아군이 방어력과 마법 저항력을 얻습니다. 요새는 더 많이 얻으며 초반 10초간 2배 효과를 받습니다.",
     tiers: [
       { count: 2, effect: "전체 +10, 요새 추가 +8 방어력/마법 저항력" },
       { count: 4, effect: "전체 +10, 요새 추가 +30 방어력/마법 저항력" },
-      { count: 6, effect: "전체 +10, 요새 추가 +65 방어력/마법 저항력, 비요새 +25 추가" },
+      {
+        count: 6,
+        effect: "전체 +10, 요새 추가 +65 방어력/마법 저항력, 비요새 +25 추가",
+      },
     ],
     champions: ["Garen", "Rell", "XinZhao", "Shen", "Swain", "Leona", "Braum"],
   },
@@ -237,7 +245,7 @@ export const SYNERGY_INFO = {
       { count: 4, effect: "전체 +2, 신동 추가 +5 마나 재생" },
       { count: 6, effect: "전체 +2, 신동 추가 +10 마나 재생" },
     ],
-    champions: ["Ezreal", "Syndra", "Malzahar", "Yuumi", "Seraphine", "Ekko"],
+    champions: ["Ezreal", "Syndra", "Malzahar", "Yuumi", "Seraphine"],
   },
 
   // 저격수 (Sniper)
@@ -259,9 +267,18 @@ export const SYNERGY_INFO = {
     description:
       "전체 팀이 체력 +100을 얻습니다. 헤비급은 추가 체력을 얻고 체력의 일정 비율만큼 공격력을 얻습니다.",
     tiers: [
-      { count: 2, effect: "전체 +100, 헤비급 추가 체력 +10%, 체력의 5% 공격력" },
-      { count: 4, effect: "전체 +100, 헤비급 추가 체력 +22%, 체력의 7% 공격력" },
-      { count: 6, effect: "전체 +100, 헤비급 추가 체력 +40%, 체력의 10% 공격력" },
+      {
+        count: 2,
+        effect: "전체 +100, 헤비급 추가 체력 +10%, 체력의 5% 공격력",
+      },
+      {
+        count: 4,
+        effect: "전체 +100, 헤비급 추가 체력 +22%, 체력의 7% 공격력",
+      },
+      {
+        count: 6,
+        effect: "전체 +100, 헤비급 추가 체력 +40%, 체력의 10% 공격력",
+      },
     ],
     champions: ["Zac", "Aatrox", "Kobuko", "Jayce", "Darius", "Poppy"],
   },
@@ -276,15 +293,7 @@ export const SYNERGY_INFO = {
       { count: 4, effect: "20~30% 피해 감소, 처치 시 체력 10% 회복" },
       { count: 6, effect: "25~35% 피해 감소, 처치 시 체력 10% 회복" },
     ],
-    champions: [
-      "Aatrox",
-      "Naafiri",
-      "Vi",
-      "DrMundo",
-      "Udyr",
-      "Sett",
-      "LeeSin",
-    ],
+    champions: ["Aatrox", "Naafiri", "Vi", "DrMundo", "Udyr", "Sett", "LeeSin"],
   },
 
   // 책략가 (Strategist)
@@ -296,7 +305,7 @@ export const SYNERGY_INFO = {
       { count: 3, effect: "주변 아군 마나 +10" },
       { count: 4, effect: "주변 아군 마나 +15, 추가 효과 강화" },
     ],
-    champions: ["Janna", "Ziggs", "Ryze", "JarvanIV", "Ekko"],
+    champions: ["Janna", "Ziggs", "Ryze", "JarvanIV"],
   },
 
   // 이단아 (Edgelord)
