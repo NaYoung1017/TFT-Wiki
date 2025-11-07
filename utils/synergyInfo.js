@@ -153,7 +153,7 @@ export const SYNERGY_INFO = {
       { count: 2, effect: "피해 증폭 +8%" },
       { count: 4, effect: "피해 증폭 +16%, 추가 효과 강화" },
     ],
-    champions: ["Darius", "Kennen", "Kaisa", "Akali"],
+    champions: ["Kennen", "Kaisa", "Darius", "Akali"],
   },
 
   // ===== 직업 시너지 =====

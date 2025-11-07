@@ -9,57 +9,14 @@ import {
 } from "../utils/itemsInfo";
 
 export default function ItemsPage() {
-  const [filter, setFilter] = useState("all"); // all, damage, defense, utility
+  const [filter, setFilter] = useState("items"); // items, emblem
 
   // 완성 아이템 필터링
   const getFilteredItems = () => {
-    const items = Object.entries(COMPLETED_ITEMS);
-
-    if (filter === "all") return items;
-
-    if (filter === "damage") {
-      return items.filter(([key, item]) => {
-        const name = item.name.toLowerCase();
-        const effect = item.effect.toLowerCase();
-        return (
-          effect.includes("공격력") ||
-          effect.includes("주문력") ||
-          effect.includes("피해") ||
-          effect.includes("치명타") ||
-          name.includes("검") ||
-          name.includes("총") ||
-          name.includes("창")
-        );
-      });
+    if (filter === "emblem") {
+      return Object.entries(EMBLEM_ITEMS);
     }
-
-    if (filter === "defense") {
-      return items.filter(([key, item]) => {
-        const effect = item.effect.toLowerCase();
-        return (
-          effect.includes("방어력") ||
-          effect.includes("마법 저항력") ||
-          effect.includes("체력") ||
-          effect.includes("보호막") ||
-          effect.includes("회복")
-        );
-      });
-    }
-
-    if (filter === "utility") {
-      return items.filter(([key, item]) => {
-        const effect = item.effect.toLowerCase();
-        return (
-          effect.includes("마나") ||
-          effect.includes("공격 속도") ||
-          effect.includes("사거리") ||
-          effect.includes("특성") ||
-          effect.includes("별 레벨")
-        );
-      });
-    }
-
-    return items;
+    return Object.entries(COMPLETED_ITEMS);
   };
 
   const filteredItems = getFilteredItems();
@@ -133,35 +90,19 @@ export default function ItemsPage() {
             <span className={styles.sortLabel}>분류:</span>
             <button
               className={`${styles.sortBtn} ${
-                filter === "all" ? styles.active : ""
+                filter === "items" ? styles.active : ""
               }`}
-              onClick={() => setFilter("all")}
+              onClick={() => setFilter("items")}
             >
-              전체
+              아이템
             </button>
             <button
               className={`${styles.sortBtn} ${
-                filter === "damage" ? styles.active : ""
+                filter === "emblem" ? styles.active : ""
               }`}
-              onClick={() => setFilter("damage")}
+              onClick={() => setFilter("emblem")}
             >
-              공격
-            </button>
-            <button
-              className={`${styles.sortBtn} ${
-                filter === "defense" ? styles.active : ""
-              }`}
-              onClick={() => setFilter("defense")}
-            >
-              방어
-            </button>
-            <button
-              className={`${styles.sortBtn} ${
-                filter === "utility" ? styles.active : ""
-              }`}
-              onClick={() => setFilter("utility")}
-            >
-              유틸
+              상징
             </button>
           </div>
 
@@ -222,63 +163,6 @@ export default function ItemsPage() {
                     </div>
                   </div>
                 )}
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* 상징 아이템 */}
-        <section className={styles.section}>
-          <div className={styles.sectionHeader}>
-            <h1 className={styles.sectionTitle}>
-              <span className={styles.titleIcon}>🌟</span>
-              상징 아이템
-            </h1>
-            <p className={styles.sectionSubtitle}>
-              뒤집개로 만드는 특성 부여 아이템
-            </p>
-          </div>
-
-          <div className={itemStyles.itemListHorizontal}>
-            {Object.entries(EMBLEM_ITEMS).map(([key, item], index) => (
-              <div key={key} className={itemStyles.itemRowHorizontal}>
-                {/* 순위 */}
-                <div className={itemStyles.itemRank}>#{index + 1}</div>
-
-                {/* 아이템 아이콘 */}
-                <div className={itemStyles.itemIconLarge}>
-                  {item.image ? (
-                    <img
-                      src={item.image}
-                      alt={item.name}
-                      className={itemStyles.itemImage}
-                    />
-                  ) : (
-                    item.name.slice(0, 2)
-                  )}
-                </div>
-
-                {/* 아이템 정보 */}
-                <div className={itemStyles.itemInfo}>
-                  <h3 className={itemStyles.itemNameLarge}>{item.name}</h3>
-                  <p className={itemStyles.itemEffectText}>{item.effect}</p>
-                  <div className={itemStyles.itemComponentsInline}>
-                    <span className={itemStyles.componentBadge}>
-                      {BASIC_ITEMS[item.components[0]].name}
-                    </span>
-                    <span className={itemStyles.componentPlus}>+</span>
-                    <span className={itemStyles.componentBadge}>
-                      {BASIC_ITEMS[item.components[1]].name}
-                    </span>
-                  </div>
-                </div>
-
-                {/* 상징 아이템은 통계 없음 */}
-                <div className={itemStyles.itemStatsInline}>
-                  <div className={itemStyles.emblemPlaceholder}>
-                    특성 부여 아이템
-                  </div>
-                </div>
               </div>
             ))}
           </div>

@@ -7,7 +7,7 @@ import augmentData from '../public/data/tft-augments.json';
 // 챔피언 데이터 맵 생성 (간단한 ID로 접근 가능하게)
 const championMap = {};
 Object.values(championData.data).forEach(champ => {
-  const simpleName = champ.id.replace('TFT15_', '').replace('TFT_', '');
+  const simpleName = champ.id.replace('TFT15_', '').replace('TFT_', '').toLowerCase();
   championMap[simpleName] = {
     id: champ.id,
     name: champ.name, // 한글 이름
@@ -42,7 +42,7 @@ Object.values(itemData.data).forEach(item => {
  * 챔피언 한글 이름 가져오기
  */
 export function getChampionName(championId) {
-  const champ = championMap[championId];
+  const champ = championMap[championId.toLowerCase()];
   return champ ? champ.name : championId;
 }
 
@@ -50,7 +50,7 @@ export function getChampionName(championId) {
  * 챔피언 이미지 경로 가져오기
  */
 export function getChampionImage(championId) {
-  const champ = championMap[championId];
+  const champ = championMap[championId.toLowerCase()];
   if (!champ || !champ.image) return null;
 
   // public/images/champions/ 경로 사용
@@ -62,7 +62,7 @@ export function getChampionImage(championId) {
  * 챔피언 코스트 가져오기
  */
 export function getChampionCost(championId) {
-  const champ = championMap[championId];
+  const champ = championMap[championId.toLowerCase()];
   return champ ? champ.tier : 1;
 }
 
@@ -89,7 +89,9 @@ export function getTraitImage(traitId) {
  * 아이템 한글 이름 가져오기
  */
 export function getItemName(itemId) {
-  const item = itemMap[itemId];
+  // TFT_Item_ prefix 제거
+  const simpleName = itemId.replace('TFT_Item_', '').replace('TFT15_', '');
+  const item = itemMap[simpleName];
   return item ? item.name : itemId;
 }
 

@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import Head from "next/head";
 import styles from "../styles/MetaWiki.module.css";
-import { getChampionName, getTraitName, getItemName, getChampionImage, getAugmentName, getTraitImage } from "../utils/tftDataLoader";
+import { getChampionName, getTraitName, getItemName, getChampionImage, getAugmentName, getTraitImage, getChampionCost, getItemImage } from "../utils/tftDataLoader";
 
 export default function TFTMetaWiki() {
   const [activeSection, setActiveSection] = useState("meta");
@@ -379,32 +379,44 @@ export default function TFTMetaWiki() {
               </h3>
               <div className={styles.championList}>
                 {selectedMeta.topChampions &&
-                  selectedMeta.topChampions.map((champ, idx) => (
-                    <div key={idx} className={styles.championItem}>
-                      <div className={styles.championItemIcon}>
-                        <img
-                          src={getChampionImage(champ.name)}
-                          alt={getChampionName(champ.name)}
-                          className={styles.champIconLarge}
-                          onError={(e) => {
-                            e.target.style.display = 'none';
-                            e.target.nextSibling.style.display = 'flex';
-                          }}
-                        />
-                        <span className={styles.champIconLarge} style={{display: 'none', background: 'linear-gradient(135deg, #8b5cf6, #06b6d4)'}}>
-                          {getChampionName(champ.name).slice(0, 2)}
-                        </span>
+                  selectedMeta.topChampions
+                    .sort((a, b) => {
+                      const costA = getChampionCost(a.name);
+                      const costB = getChampionCost(b.name);
+                      if (costA !== costB) {
+                        return costA - costB; // 코스트 오름차순
+                      }
+                      return b.count - a.count; // 같은 코스트면 사용 빈도순
+                    })
+                    .map((champ, idx) => (
+                      <div key={idx} className={styles.championItem}>
+                        <div className={styles.championItemIcon}>
+                          <img
+                            src={getChampionImage(champ.name)}
+                            alt={getChampionName(champ.name)}
+                            className={styles.champIconLarge}
+                            onError={(e) => {
+                              e.target.style.display = 'none';
+                              e.target.nextSibling.style.display = 'flex';
+                            }}
+                          />
+                          <span className={styles.champIconLarge} style={{display: 'none', background: 'linear-gradient(135deg, #8b5cf6, #06b6d4)'}}>
+                            {getChampionName(champ.name).slice(0, 2)}
+                          </span>
+                          <span className={`${styles.costBadge} ${styles[`cost${getChampionCost(champ.name)}`]}`}>
+                            {getChampionCost(champ.name)}
+                          </span>
+                        </div>
+                        <div className={styles.championItemInfo}>
+                          <span className={styles.championItemName}>
+                            {getChampionName(champ.name)}
+                          </span>
+                          <span className={styles.championItemCount}>
+                            {champ.count}회 사용
+                          </span>
+                        </div>
                       </div>
-                      <div className={styles.championItemInfo}>
-                        <span className={styles.championItemName}>
-                          {getChampionName(champ.name)}
-                        </span>
-                        <span className={styles.championItemCount}>
-                          {champ.count}회 사용
-                        </span>
-                      </div>
-                    </div>
-                  ))}
+                    ))}
               </div>
             </div>
 
@@ -415,10 +427,22 @@ export default function TFTMetaWiki() {
               {selectedMeta.topItems &&
                 selectedMeta.topItems.map((item, idx) => (
                   <div key={idx} className={styles.itemRecommend}>
-                    <span className={styles.itemCombo}>
-                      {item.combo.split(' + ').map(i => getItemName(i)).join(' + ')}
-                    </span>
-                    <span className={styles.itemCount}>({item.count}회)</span>
+                    <div className={styles.itemComboRow}>
+                      <span className={styles.itemCombo}>
+                        {item.combo.split(' + ').map(i => getItemName(i)).join(' + ')}
+                      </span>
+                      <span className={styles.itemCount}>({item.count}회)</span>
+                    </div>
+                    {item.champions && item.champions.length > 0 && (
+                      <div className={styles.itemChampions}>
+                        <span className={styles.itemChampionsLabel}>주요 사용 챔피언:</span>
+                        {item.champions.map((champ, champIdx) => (
+                          <span key={champIdx} className={styles.itemChampionTag}>
+                            {getChampionName(champ.name)}
+                          </span>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 ))}
             </div>
@@ -436,11 +460,133 @@ export default function TFTMetaWiki() {
             </div>
 
             <div className={styles.modalSection}>
-              <h3 className={styles.modalSectionTitle}>📊 통계 정보</h3>
-              <div className={styles.statsInfo}>
-                <p>총 게임 수: {selectedMeta.games}</p>
-                <p>평균 레벨: {selectedMeta.avgLevel}</p>
-                <p>Top 4 비율: {selectedMeta.top4Rate}%</p>
+              <h3 className={styles.modalSectionTitle}>⚡ 레벨별 덱 파워</h3>
+              <div className={styles.powerByLevel}>
+                {selectedMeta.levelPowers && selectedMeta.levelPowers.length > 0 ? (
+                  (() => {
+                    // 핵심 레벨 찾기 (Top4 비율이 가장 높은 레벨)
+                    const peakLevel = selectedMeta.levelPowers
+                      .filter(l => l.games >= 3)
+                      .reduce((max, curr) =>
+                        parseFloat(curr.top4Rate) > parseFloat(max.top4Rate) ? curr : max,
+                        selectedMeta.levelPowers[0]
+                      )?.level;
+
+                    return [5, 6, 7, 8, 9].map((targetLevel) => {
+                      const levelData = selectedMeta.levelPowers.find(l => l.level === targetLevel);
+                      const isPeakLevel = targetLevel === peakLevel;
+
+                      let powerPercent, powerText;
+
+                      if (levelData && levelData.games >= 3) {
+                        // 실제 데이터가 있는 경우
+                        powerPercent = Math.min(100, parseFloat(levelData.top4Rate) + 20);
+                        const rate = parseFloat(levelData.top4Rate);
+                        if (rate >= 60) powerText = "매우 강함";
+                        else if (rate >= 50) powerText = "강함";
+                        else if (rate >= 40) powerText = "중간";
+                        else powerText = "약함";
+                      } else {
+                        // 데이터가 부족한 경우 추정값
+                        if (targetLevel <= 6) { powerPercent = 35; powerText = "약함"; }
+                        else if (targetLevel === 7) { powerPercent = 55; powerText = "중간"; }
+                        else if (targetLevel === 8) { powerPercent = 75; powerText = "강함"; }
+                        else { powerPercent = 85; powerText = "매우 강함"; }
+                      }
+
+                      return (
+                        <div key={targetLevel} className={styles.powerLevelItem}>
+                          <span className={styles.powerLevel}>
+                            Lv {targetLevel}
+                            {isPeakLevel && <span className={styles.peakBadge}>핵심</span>}
+                          </span>
+                          <div className={styles.powerBar}>
+                            <div className={styles.powerBarFill} style={{width: `${powerPercent}%`}}></div>
+                          </div>
+                          <span className={styles.powerText}>
+                            {powerText}
+                          </span>
+                        </div>
+                      );
+                    });
+                  })()
+                ) : (
+                  <p className={styles.noData}>레벨별 데이터가 충분하지 않습니다</p>
+                )}
+              </div>
+            </div>
+
+            <div className={styles.modalSection}>
+              <h3 className={styles.modalSectionTitle}>⭐ 3성 필수 챔피언</h3>
+              <div className={styles.keyChampions}>
+                {selectedMeta.keyChampions && selectedMeta.keyChampions.length > 0 ? (
+                  selectedMeta.keyChampions.map((champ, idx) => (
+                    <div key={idx} className={styles.keyChampionItem}>
+                      <div className={styles.keyChampionIcon}>
+                        <img
+                          src={getChampionImage(champ.name)}
+                          alt={getChampionName(champ.name)}
+                          className={styles.champIconMedium}
+                          onError={(e) => {
+                            e.target.style.display = 'none';
+                            e.target.nextSibling.style.display = 'flex';
+                          }}
+                        />
+                        <span className={styles.champIconMedium} style={{display: 'none', background: 'linear-gradient(135deg, #8b5cf6, #06b6d4)'}}>
+                          {getChampionName(champ.name).slice(0, 2)}
+                        </span>
+                        <span className={`${styles.costBadge} ${styles[`cost${getChampionCost(champ.name)}`]}`}>
+                          {getChampionCost(champ.name)}
+                        </span>
+                      </div>
+                      <span className={styles.keyChampionName}>{getChampionName(champ.name)}</span>
+                      <span className={styles.keyChampionPriority}>
+                        우선순위 {idx + 1}
+                      </span>
+                    </div>
+                  ))
+                ) : (
+                  <p className={styles.noData}>이 덱은 3성 챔피언이 필수적이지 않습니다 (레벨업 우선)</p>
+                )}
+              </div>
+            </div>
+
+            <div className={styles.modalSection}>
+              <h3 className={styles.modalSectionTitle}>🎯 리롤 타이밍</h3>
+              <div className={styles.rerollGuide}>
+                {selectedMeta.rerollTiming ? (
+                  <>
+                    <div className={`${styles.rerollPhase} ${styles[`priority${selectedMeta.rerollTiming.earlyGame.priority}`]}`}>
+                      <span className={styles.rerollStage}>{selectedMeta.rerollTiming.earlyGame.stage}</span>
+                      <span className={styles.rerollAction}>
+                        초반 세팅
+                        {selectedMeta.rerollTiming.earlyGame.priority === 'high' && ' ⚡'}
+                        {selectedMeta.rerollTiming.earlyGame.priority === 'medium' && ' ⭐'}
+                      </span>
+                      <p className={styles.rerollDesc}>{selectedMeta.rerollTiming.earlyGame.description}</p>
+                    </div>
+                    <div className={`${styles.rerollPhase} ${styles[`priority${selectedMeta.rerollTiming.midGame.priority}`]}`}>
+                      <span className={styles.rerollStage}>{selectedMeta.rerollTiming.midGame.stage}</span>
+                      <span className={styles.rerollAction}>
+                        핵심 구간
+                        {selectedMeta.rerollTiming.midGame.priority === 'high' && ' ⚡'}
+                        {selectedMeta.rerollTiming.midGame.priority === 'medium' && ' ⭐'}
+                      </span>
+                      <p className={styles.rerollDesc}>{selectedMeta.rerollTiming.midGame.description}</p>
+                    </div>
+                    <div className={`${styles.rerollPhase} ${styles[`priority${selectedMeta.rerollTiming.lateGame.priority}`]}`}>
+                      <span className={styles.rerollStage}>{selectedMeta.rerollTiming.lateGame.stage}</span>
+                      <span className={styles.rerollAction}>
+                        후반 전략
+                        {selectedMeta.rerollTiming.lateGame.priority === 'high' && ' ⚡'}
+                        {selectedMeta.rerollTiming.lateGame.priority === 'medium' && ' ⭐'}
+                      </span>
+                      <p className={styles.rerollDesc}>{selectedMeta.rerollTiming.lateGame.description}</p>
+                    </div>
+                  </>
+                ) : (
+                  <p className={styles.noData}>리롤 타이밍 데이터가 없습니다</p>
+                )}
               </div>
             </div>
           </div>

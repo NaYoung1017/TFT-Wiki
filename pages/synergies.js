@@ -10,12 +10,7 @@ import {
 } from "../utils/tftDataLoader";
 import { getSynergyInfo } from "../utils/synergyInfo";
 import {
-  getPlayStyleRecommendation,
-} from "../utils/synergyLevelCalculator";
-import {
-  analyzePowerSpike,
   analyzeThreeStarRequirements,
-  recommendGoldTiming,
 } from "../utils/powerSpikeAnalyzer";
 
 export default function SynergiesPage() {
@@ -382,179 +377,134 @@ export default function SynergiesPage() {
                     </div>
                   )}
 
-                  {/* 통계 정보 */}
+                  {/* 상세 통계 */}
                   <div className={styles.modalSection}>
                     <h3 className={styles.modalSectionTitle}>📊 상세 통계</h3>
-                    <div className={styles.statsGrid}>
-                      <div className={styles.statsGridItem}>
-                        <span className={styles.statsGridLabel}>평균 등수</span>
-                        <span className={styles.statsGridValue}>
-                          {selectedSynergy.avgPlacement}등
+                    <div className={styles.statsGridFixed}>
+                      <div className={styles.statCard}>
+                        <span className={styles.statCardLabel}>총 게임 수</span>
+                        <span className={styles.statCardValue}>{selectedSynergy.games}게임</span>
+                      </div>
+                      <div className={styles.statCard}>
+                        <span className={styles.statCardLabel}>평균 등수</span>
+                        <span className={`${styles.statCardValue} ${styles.highlight}`}>
+                          {selectedSynergy.avgPlacement}위
                         </span>
                       </div>
-                      <div className={styles.statsGridItem}>
-                        <span className={styles.statsGridLabel}>승률</span>
-                        <span className={styles.statsGridValue}>
-                          {selectedSynergy.winRate}%
-                        </span>
+                      <div className={styles.statCard}>
+                        <span className={styles.statCardLabel}>승률</span>
+                        <span className={styles.statCardValue}>{selectedSynergy.winRate}%</span>
                       </div>
-                      <div className={styles.statsGridItem}>
-                        <span className={styles.statsGridLabel}>픽률</span>
-                        <span className={styles.statsGridValue}>
-                          {selectedSynergy.pickRate}%
-                        </span>
+                      <div className={styles.statCard}>
+                        <span className={styles.statCardLabel}>Top 4 비율</span>
+                        <span className={styles.statCardValue}>{selectedSynergy.top4Rate}%</span>
                       </div>
-                      <div className={styles.statsGridItem}>
-                        <span className={styles.statsGridLabel}>
-                          4등 이내 비율
-                        </span>
-                        <span className={styles.statsGridValue}>
-                          {selectedSynergy.top4Rate}%
+                      <div className={styles.statCard}>
+                        <span className={styles.statCardLabel}>픽률</span>
+                        <span className={styles.statCardValue}>{selectedSynergy.pickRate}%</span>
+                      </div>
+                      <div className={styles.statCard}>
+                        <span className={styles.statCardLabel}>평균 레벨</span>
+                        <span className={styles.statCardValue}>
+                          {selectedSynergy.avgLevel ? `Lv ${selectedSynergy.avgLevel}` : 'N/A'}
                         </span>
                       </div>
                     </div>
                   </div>
 
-
                   {/* 플레이 스타일 추천 */}
-                  {synergyInfo &&
-                    synergyInfo.champions && (
-                      <div className={styles.modalSection}>
-                        <h3 className={styles.modalSectionTitle}>
-                          💡 플레이 스타일 추천
-                        </h3>
-                        {(() => {
-                          const playStyle = getPlayStyleRecommendation(
-                            synergyInfo.champions,
-                            synergyInfo.tiers
-                          );
-                          if (!playStyle) {
-                            return (
-                              <p>플레이 스타일 정보를 불러올 수 없습니다.</p>
-                            );
+                  <div className={styles.modalSection}>
+                    <h3 className={styles.modalSectionTitle}>💡 플레이 스타일 추천</h3>
+                    {selectedSynergy.playStyle ? (
+                      <div className={styles.playStyleCard}>
+                        <div className={styles.playStyleHeader}>
+                          <h4 className={styles.playStyleTitle}>{selectedSynergy.playStyle.type}</h4>
+                          <span className={`${styles.playStyleBadge} ${
+                            selectedSynergy.playStyle.type.includes('리롤') ? styles.rerollBadge : styles.levelBadge
+                          }`}>
+                            {selectedSynergy.playStyle.type.includes('리롤') ? '🎯 리롤 덱' : '📈 레벨업 덱'}
+                          </span>
+                        </div>
+                        <p className={styles.playStyleDescription}>
+                          {selectedSynergy.playStyle.type.includes('리롤')
+                            ? '저코스트 챔피언을 3성으로 만들어 강력한 파워를 발휘하는 덱입니다. 초중반에 집중적인 리롤이 필요합니다.'
+                            : '고코스트 챔피언의 시너지 조합으로 후반 파워를 노리는 덱입니다. 안정적인 경제 운영이 중요합니다.'
                           }
-                          return (
-                            <div className={styles.playStyleCard}>
-                              <h4 className={styles.playStyleTitle}>
-                                {playStyle.style}
-                              </h4>
-                              <p className={styles.playStyleDescription}>
-                                {playStyle.description}
-                              </p>
-                              <div className={styles.playStyleTips}>
-                                <strong>핵심 팁:</strong>
-                                <ul className={styles.playStyleTipList}>
-                                  {playStyle.tips.map((tip, idx) => (
-                                    <li key={idx}>{tip}</li>
-                                  ))}
-                                </ul>
-                              </div>
+                        </p>
+                        {selectedSynergy.avgLevel && (
+                          <div className={styles.playStyleStats}>
+                            <div className={styles.playStyleStat}>
+                              <span className={styles.playStyleStatLabel}>평균 목표 레벨</span>
+                              <span className={styles.playStyleStatValue}>Lv {selectedSynergy.avgLevel}</span>
                             </div>
-                          );
-                        })()}
+                            <div className={styles.playStyleStat}>
+                              <span className={styles.playStyleStatLabel}>리롤 집중도</span>
+                              <span className={styles.playStyleStatValue}>
+                                {selectedSynergy.playStyle.type.includes('리롤') ? '높음 ⚡' : '낮음 📊'}
+                              </span>
+                            </div>
+                          </div>
+                        )}
                       </div>
+                    ) : (
+                      <p className={styles.noData}>플레이 스타일 데이터가 없습니다</p>
                     )}
+                  </div>
 
-                  {/* 파워 스파이크 분석 */}
-                  {synergyInfo &&
-                    synergyInfo.champions && (
-                      <div className={styles.modalSection}>
-                        <h3 className={styles.modalSectionTitle}>
-                          📈 레벨별 파워 스파이크
-                        </h3>
-                        {(() => {
-                          const powerSpike = analyzePowerSpike(
-                            synergyInfo.champions,
-                            synergyInfo.tiers
-                          );
-                          if (
-                            !powerSpike ||
-                            !powerSpike.levelPowers ||
-                            powerSpike.levelPowers.length === 0
-                          ) {
+                  {/* 레벨별 덱 파워 */}
+                  <div className={styles.modalSection}>
+                    <h3 className={styles.modalSectionTitle}>⚡ 레벨별 덱 파워</h3>
+                    <div className={styles.powerByLevel}>
+                      {selectedSynergy.levelPowers && selectedSynergy.levelPowers.length > 0 ? (
+                        (() => {
+                          const peakLevel = selectedSynergy.levelPowers
+                            .filter(l => l.games >= 3)
+                            .reduce((max, curr) =>
+                              parseFloat(curr.top4Rate) > parseFloat(max.top4Rate) ? curr : max,
+                              selectedSynergy.levelPowers[0]
+                            )?.level;
+
+                          return [5, 6, 7, 8, 9].map((targetLevel) => {
+                            const levelData = selectedSynergy.levelPowers.find(l => l.level === targetLevel);
+                            const isPeakLevel = targetLevel === peakLevel;
+
+                            let powerPercent, powerText;
+
+                            if (levelData && levelData.games >= 3) {
+                              powerPercent = Math.min(100, parseFloat(levelData.top4Rate) + 20);
+                              const rate = parseFloat(levelData.top4Rate);
+                              if (rate >= 60) powerText = "매우 강함";
+                              else if (rate >= 50) powerText = "강함";
+                              else if (rate >= 40) powerText = "중간";
+                              else powerText = "약함";
+                            } else {
+                              if (targetLevel <= 6) { powerPercent = 35; powerText = "약함"; }
+                              else if (targetLevel === 7) { powerPercent = 55; powerText = "중간"; }
+                              else if (targetLevel === 8) { powerPercent = 75; powerText = "강함"; }
+                              else { powerPercent = 85; powerText = "매우 강함"; }
+                            }
+
                             return (
-                              <p>파워 스파이크 데이터를 불러올 수 없습니다.</p>
+                              <div key={targetLevel} className={styles.powerLevelItem}>
+                                <span className={styles.powerLevel}>
+                                  Lv {targetLevel}
+                                  {isPeakLevel && <span className={styles.peakBadge}>핵심</span>}
+                                </span>
+                                <div className={styles.powerBar}>
+                                  <div className={styles.powerBarFill} style={{width: `${powerPercent}%`}}></div>
+                                </div>
+                                <span className={styles.powerText}>
+                                  {powerText}
+                                </span>
+                              </div>
                             );
-                          }
-
-                          // 최대값 찾기
-                          const maxPower = Math.max(
-                            ...powerSpike.levelPowers.map((lp) => lp.power)
-                          );
-
-                          return (
-                            <div className={styles.powerSpikeGraphContainer}>
-                              <div className={styles.powerSpikeChart}>
-                                {powerSpike.levelPowers.map(
-                                  (levelData, idx) => {
-                                    // 최대 220px 높이로 스케일링
-                                    const heightPx =
-                                      (levelData.power / maxPower) * 220;
-                                    const isStrong =
-                                      levelData.power >= maxPower * 0.8;
-                                    const isMedium =
-                                      levelData.power >= maxPower * 0.6 &&
-                                      !isStrong;
-
-                                    return (
-                                      <div
-                                        key={idx}
-                                        className={styles.powerSpikeBarWrapper}
-                                      >
-                                        <div
-                                          className={
-                                            styles.powerSpikeBarVertical
-                                          }
-                                          style={{
-                                            height: `${heightPx}px`,
-                                            backgroundColor: isStrong
-                                              ? "#10b981"
-                                              : isMedium
-                                              ? "#3b82f6"
-                                              : "#6b7280",
-                                          }}
-                                          title={`레벨 ${levelData.level}: 파워 ${levelData.power}`}
-                                        />
-                                        <span
-                                          className={
-                                            styles.powerSpikeLevelLabel
-                                          }
-                                        >
-                                          {levelData.level}
-                                        </span>
-                                      </div>
-                                    );
-                                  }
-                                )}
-                              </div>
-                              <div className={styles.powerSpikeLegend}>
-                                <div className={styles.powerSpikeLegendItem}>
-                                  <div
-                                    className={styles.powerSpikeLegendColor}
-                                    style={{ backgroundColor: "#10b981" }}
-                                  ></div>
-                                  <span>강함 (파워 스파이크)</span>
-                                </div>
-                                <div className={styles.powerSpikeLegendItem}>
-                                  <div
-                                    className={styles.powerSpikeLegendColor}
-                                    style={{ backgroundColor: "#3b82f6" }}
-                                  ></div>
-                                  <span>중간</span>
-                                </div>
-                                <div className={styles.powerSpikeLegendItem}>
-                                  <div
-                                    className={styles.powerSpikeLegendColor}
-                                    style={{ backgroundColor: "#6b7280" }}
-                                  ></div>
-                                  <span>약함</span>
-                                </div>
-                              </div>
-                            </div>
-                          );
-                        })()}
-                      </div>
-                    )}
+                          });
+                        })()
+                      ) : (
+                        <p className={styles.noData}>레벨별 데이터가 충분하지 않습니다</p>
+                      )}
+                    </div>
+                  </div>
 
                   {/* 3성 챔피언 추천 */}
                   {synergyInfo && synergyInfo.champions && (
@@ -572,51 +522,54 @@ export default function SynergiesPage() {
                           threeStarAnalysis.recommendations.length === 0
                         ) {
                           return (
-                            <p>3성 챔피언 추천 데이터를 불러올 수 없습니다.</p>
+                            <p className={styles.noData}>이 시너지는 특정 챔피언을 3성으로 만들 필요가 없습니다.</p>
                           );
                         }
                         return (
                           <div className={styles.threeStarContainer}>
                             {threeStarAnalysis.recommendations.map(
-                              (rec, idx) => (
-                                <div key={idx} className={styles.threeStarCard}>
-                                  <div className={styles.threeStarChampion}>
-                                    <img
-                                      src={getChampionImage(rec.champion)}
-                                      alt={getChampionName(rec.champion)}
-                                      className={styles.threeStarIcon}
-                                      onError={(e) => {
-                                        e.target.style.display = "none";
-                                        e.target.nextSibling.style.display =
-                                          "flex";
-                                      }}
-                                    />
-                                    <span
-                                      className={styles.championFallback}
-                                      style={{ display: "none" }}
-                                    >
-                                      {getChampionName(rec.champion).slice(
-                                        0,
-                                        2
-                                      )}
-                                    </span>
-                                    <span className={styles.threeStarName}>
-                                      {getChampionName(rec.champion)}
-                                    </span>
+                              (rec, idx) => {
+                                const cost = getChampionCost(rec.champion);
+                                return (
+                                  <div key={idx} className={styles.threeStarCard}>
+                                    <div className={styles.threeStarChampionWrapper}>
+                                      <div className={styles.championIconWrapper}>
+                                        <img
+                                          src={getChampionImage(rec.champion)}
+                                          alt={getChampionName(rec.champion)}
+                                          className={styles.championIconModal}
+                                          onError={(e) => {
+                                            e.target.style.display = "none";
+                                            e.target.nextSibling.style.display = "flex";
+                                          }}
+                                        />
+                                        <span
+                                          className={styles.championFallback}
+                                          style={{ display: "none" }}
+                                        >
+                                          {getChampionName(rec.champion).slice(0, 2)}
+                                        </span>
+                                        {cost && (
+                                          <span className={`${styles.championCostBadge} ${styles[`cost${cost}`]}`}>
+                                            {cost}
+                                          </span>
+                                        )}
+                                      </div>
+                                      <span className={styles.championName}>
+                                        {getChampionName(rec.champion)}
+                                      </span>
+                                    </div>
+                                    <div className={styles.threeStarInfo}>
+                                      <span className={styles.threeStarPriority}>
+                                        우선순위 {rec.priority}
+                                      </span>
+                                      <p className={styles.threeStarReason}>
+                                        {rec.reason}
+                                      </p>
+                                    </div>
                                   </div>
-                                  <div className={styles.threeStarInfo}>
-                                    <p className={styles.threeStarPriority}>
-                                      우선순위: {rec.priority}
-                                    </p>
-                                    <p className={styles.threeStarReason}>
-                                      {rec.reason}
-                                    </p>
-                                    <p className={styles.threeStarCost}>
-                                      필요 골드: {rec.goldCost}G
-                                    </p>
-                                  </div>
-                                </div>
-                              )
+                                );
+                              }
                             )}
                           </div>
                         );
@@ -624,55 +577,43 @@ export default function SynergiesPage() {
                     </div>
                   )}
 
-                  {/* 골드 타이밍 추천 */}
-                  {synergyInfo &&
-                    synergyInfo.champions && (
-                      <div className={styles.modalSection}>
-                        <h3 className={styles.modalSectionTitle}>
-                          💰 골드 사용 타이밍
-                        </h3>
-                        {(() => {
-                          const goldTiming = recommendGoldTiming(
-                            synergyInfo.champions,
-                            synergyInfo.tiers
-                          );
-                          if (
-                            !goldTiming ||
-                            !goldTiming.stages ||
-                            goldTiming.stages.length === 0
-                          ) {
-                            return (
-                              <p>골드 타이밍 데이터를 불러올 수 없습니다.</p>
-                            );
-                          }
-                          return (
-                            <div className={styles.goldTimingContainer}>
-                              {goldTiming.stages.map((stage, idx) => (
-                                <div
-                                  key={idx}
-                                  className={styles.goldTimingCard}
-                                >
-                                  <div className={styles.goldTimingHeader}>
-                                    <span className={styles.goldTimingStage}>
-                                      {stage.stage}
-                                    </span>
-                                    <span className={styles.goldTimingAction}>
-                                      {stage.action}
-                                    </span>
-                                  </div>
-                                  <p className={styles.goldTimingReason}>
-                                    {stage.reason}
-                                  </p>
-                                  <p className={styles.goldTimingTarget}>
-                                    목표 골드: {stage.targetGold}G
-                                  </p>
-                                </div>
-                              ))}
-                            </div>
-                          );
-                        })()}
+                  {/* 골드 사용 타이밍 */}
+                  <div className={styles.modalSection}>
+                    <h3 className={styles.modalSectionTitle}>💰 골드 사용 타이밍</h3>
+                    {selectedSynergy.playStyle && selectedSynergy.playStyle.goldTiming ? (
+                      <div className={styles.rerollGuide}>
+                        <div className={`${styles.rerollPhase} ${styles[`priority${selectedSynergy.playStyle.goldTiming.early.priority}`]}`}>
+                          <span className={styles.rerollStage}>{selectedSynergy.playStyle.goldTiming.early.stage}</span>
+                          <span className={styles.rerollAction}>
+                            {selectedSynergy.playStyle.goldTiming.early.action}
+                            {selectedSynergy.playStyle.goldTiming.early.priority === 'high' && ' ⚡'}
+                            {selectedSynergy.playStyle.goldTiming.early.priority === 'medium' && ' ⭐'}
+                          </span>
+                          <p className={styles.rerollDesc}>{selectedSynergy.playStyle.goldTiming.early.desc}</p>
+                        </div>
+                        <div className={`${styles.rerollPhase} ${styles[`priority${selectedSynergy.playStyle.goldTiming.mid.priority}`]}`}>
+                          <span className={styles.rerollStage}>{selectedSynergy.playStyle.goldTiming.mid.stage}</span>
+                          <span className={styles.rerollAction}>
+                            {selectedSynergy.playStyle.goldTiming.mid.action}
+                            {selectedSynergy.playStyle.goldTiming.mid.priority === 'high' && ' ⚡'}
+                            {selectedSynergy.playStyle.goldTiming.mid.priority === 'medium' && ' ⭐'}
+                          </span>
+                          <p className={styles.rerollDesc}>{selectedSynergy.playStyle.goldTiming.mid.desc}</p>
+                        </div>
+                        <div className={`${styles.rerollPhase} ${styles[`priority${selectedSynergy.playStyle.goldTiming.late.priority}`]}`}>
+                          <span className={styles.rerollStage}>{selectedSynergy.playStyle.goldTiming.late.stage}</span>
+                          <span className={styles.rerollAction}>
+                            {selectedSynergy.playStyle.goldTiming.late.action}
+                            {selectedSynergy.playStyle.goldTiming.late.priority === 'high' && ' ⚡'}
+                            {selectedSynergy.playStyle.goldTiming.late.priority === 'medium' && ' ⭐'}
+                          </span>
+                          <p className={styles.rerollDesc}>{selectedSynergy.playStyle.goldTiming.late.desc}</p>
+                        </div>
                       </div>
+                    ) : (
+                      <p className={styles.noData}>골드 사용 타이밍 데이터가 없습니다</p>
                     )}
+                  </div>
                 </>
               );
             })()}
