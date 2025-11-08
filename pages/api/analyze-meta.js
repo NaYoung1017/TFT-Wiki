@@ -1,4 +1,5 @@
 import { loadMatchData, saveAnalyzedData } from "../../utils/dataStorage";
+import { getChampionCost } from "../../utils/tftDataLoader";
 
 // 수집된 데이터를 분석하여 메타 통계 생성
 export default async function handler(req, res) {
@@ -284,11 +285,23 @@ export default async function handler(req, res) {
             lateGame: { stage: "4-5 이후", description: "", priority: "low" },
           };
 
-          // 3성 필수 챔피언이 많으면 리롤 타이밍이 중요
-          const has3StarCarry = keyChampions.length > 0;
+          // 컴포지션의 주요 챔피언들의 평균 코스트 계산
+          const topChampionsForCost = Object.entries(comp.champions)
+            .sort((a, b) => b[1] - a[1])
+            .slice(0, 5);
+
+          const avgCompCost = topChampionsForCost.length > 0
+            ? topChampionsForCost.reduce((sum, [name, count]) => {
+                const cost = getChampionCost(name);
+                return sum + (cost || 3);
+              }, 0) / topChampionsForCost.length
+            : 3;
+
+          // 저코스트 리롤 덱인지 판단 (평균 코스트 3 미만 && 3성 챔피언 있음)
+          const isLowCostReroll = keyChampions.length > 0 && avgCompCost < 3;
           const avgLevelNum = parseFloat(comp.totalLevel / comp.games);
 
-          if (has3StarCarry) {
+          if (isLowCostReroll) {
             timing.earlyGame.priority = "medium";
             timing.earlyGame.description = "2성 코어 챔피언 확보 시작";
             timing.midGame.priority = "high";
@@ -379,21 +392,36 @@ export default async function handler(req, res) {
         const avgLevel = parseFloat(s.totalLevel / s.games);
         const has3StarCarry = keyChampions.length > 0;
 
+        // 시너지에 속한 모든 챔피언의 평균 코스트 계산 (가장 사용 빈도 높은 챔피언 기준)
+        const topChampionsForCost = Object.entries(s.champions)
+          .sort((a, b) => b[1] - a[1])
+          .slice(0, 5); // 상위 5개 챔피언
+
+        const avgSynergyCost = topChampionsForCost.length > 0
+          ? topChampionsForCost.reduce((sum, [name, count]) => {
+              const cost = getChampionCost(name);
+              return sum + (cost || 3);
+            }, 0) / topChampionsForCost.length
+          : 3;
+
+        // 저코스트 리롤 덱인지 판단 (평균 코스트 3 미만 && 3성 챔피언 있음)
+        const isLowCostReroll = has3StarCarry && avgSynergyCost < 3;
+
         const playStyle = {
-          type: has3StarCarry ? "리롤 중심" : "레벨업 중심",
-          description: has3StarCarry
-            ? `3성 ${keyChampions[0]?.name || '캐리'}를 완성하는 것이 핵심입니다`
-            : `레벨 ${Math.ceil(avgLevel)} 달성 후 5코스트 투입이 중요합니다`,
+          type: isLowCostReroll ? "리롤 중심" : "레벨업 중심",
+          description: isLowCostReroll
+            ? `저코스트 캐리를 3성으로 완성하는 리롤 덱입니다`
+            : `레벨업을 통해 고코스트 챔피언을 찾는 덱입니다`,
           goldTiming: {
-            early: has3StarCarry
+            early: isLowCostReroll
               ? { stage: "2-1 ~ 3-2", action: "골드 수급", priority: "medium", desc: "이자 50골드 달성 우선" }
               : { stage: "2-1 ~ 3-2", action: "연승/연패", priority: "high", desc: "HP 관리하며 골드 수급" },
-            mid: has3StarCarry
+            mid: isLowCostReroll
               ? { stage: "3-5 ~ 4-1", action: "집중 리롤", priority: "high", desc: "50골드 유지하며 3성 완성" }
-              : { stage: "3-5 ~ 4-1", action: "레벨업", priority: "high", desc: "경험치에 골드 투자" },
-            late: has3StarCarry
+              : { stage: "3-5 ~ 4-1", action: "레벨업", priority: "high", desc: "7~8레벨 달성 목표" },
+            late: isLowCostReroll
               ? { stage: "4-5 이후", action: "보강", priority: "low", desc: "남은 골드로 덱 완성" }
-              : { stage: "4-5 이후", action: "올인", priority: "high", desc: "5코스트 찾기 위해 리롤" },
+              : { stage: "4-5 이후", action: "올인", priority: "high", desc: "고코스트 챔피언 찾기 위해 리롤" },
           },
         };
 

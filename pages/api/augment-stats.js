@@ -15,34 +15,39 @@ export default async function handler(req, res) {
       });
     }
 
-    // 티어별로 분류 (이름 패턴으로 추정)
-    const augmentsByTier = {
-      silver: [],
-      gold: [],
-      prismatic: [],
-    };
-
-    analyzedData.augmentRankings.forEach((aug) => {
+    // 증강에 티어 정보 추가
+    const augmentsWithTier = analyzedData.augmentRankings.map((aug) => {
       const name = aug.name.toLowerCase();
-      // 실제로는 Data Dragon API에서 티어 정보를 가져와야 함
+      let tier = "silver"; // 기본값
+
+      // 이름 패턴으로 티어 추정
       if (
         name.includes("heart") ||
         name.includes("crest") ||
-        name.includes("crown")
+        name.includes("crown") ||
+        name.includes("legend")
       ) {
-        augmentsByTier.prismatic.push(aug);
-      } else if (name.includes("ii") || name.includes("plus")) {
-        augmentsByTier.gold.push(aug);
-      } else {
-        augmentsByTier.silver.push(aug);
+        tier = "prismatic";
+      } else if (
+        name.includes("ii") ||
+        name.includes("2") ||
+        name.includes("plus") ||
+        name.includes("+")
+      ) {
+        tier = "gold";
       }
+
+      return {
+        ...aug,
+        tier,
+        description: aug.description || "증강 효과 설명이 없습니다.",
+      };
     });
 
     return res.status(200).json({
-      all: analyzedData.augmentRankings,
-      byTier: augmentsByTier,
+      augments: augmentsWithTier,
       totalMatches: analyzedData.totalMatches,
-      lastAnalyzed: analyzedData.lastAnalyzed,
+      lastAnalyzed: analyzedData.savedAt || analyzedData.lastAnalyzed,
     });
   } catch (error) {
     return res.status(500).json({
