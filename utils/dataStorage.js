@@ -21,7 +21,7 @@ export function saveMatchData(matchData) {
       lastUpdate: new Date().toISOString(),
       count: matchData.length
     };
-    fs.writeFileSync(MATCH_DATA_FILE, JSON.stringify(data, null, 2), 'utf-8');
+    fs.writeFileSync(MATCH_DATA_FILE, JSON.stringify(data), 'utf-8');
     console.log(`✓ 매치 데이터 저장 완료: ${matchData.length}개`);
     return true;
   } catch (error) {
@@ -54,7 +54,7 @@ export function saveAnalyzedData(analyzedData) {
       ...analyzedData,
       savedAt: new Date().toISOString()
     };
-    fs.writeFileSync(ANALYZED_DATA_FILE, JSON.stringify(data, null, 2), 'utf-8');
+    fs.writeFileSync(ANALYZED_DATA_FILE, JSON.stringify(data), 'utf-8');
     console.log(`✓ 분석 데이터 저장 완료`);
     return true;
   } catch (error) {
