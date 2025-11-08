@@ -2390,3 +2390,248 @@
   border: 1px solid rgba(139, 92, 246, 0.3);
 }
 
+/* ========== 증강 페이지 ========== */
+.filterPanel {
+  display: flex;
+  gap: 2rem;
+  align-items: center;
+  padding: 1rem;
+  background: rgba(139, 92, 246, 0.05);
+  border-radius: 12px;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+
+.filterGroup {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+/* 리스트 형식 (가로 한줄씩) */
+.augmentList {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.augmentListItem {
+  background: rgba(139, 92, 246, 0.05);
+  border-radius: 12px;
+  padding: 1.25rem 1.5rem;
+  transition: all 0.3s ease;
+  border-left: 4px solid #8b5cf6;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.augmentListItem:hover {
+  background: rgba(139, 92, 246, 0.1);
+  transform: translateX(4px);
+  box-shadow: 0 4px 16px rgba(139, 92, 246, 0.2);
+}
+
+.augmentListHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.augmentTier {
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.augmentNameList {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: #fff;
+  margin: 0;
+}
+
+.augmentDescriptionList {
+  font-size: 0.875rem;
+  color: #9ca3af;
+  line-height: 1.6;
+  margin: 0;
+  padding-left: 2.25rem;
+}
+
+/* 기존 그리드 스타일 (사용 안함, 호환성 유지) */
+.augmentGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 1.5rem;
+}
+
+.augmentCard {
+  background: rgba(139, 92, 246, 0.05);
+  border-radius: 12px;
+  padding: 1.5rem;
+  transition: all 0.3s ease;
+  border-top: 4px solid #8b5cf6;
+}
+
+.augmentCard:hover {
+  background: rgba(139, 92, 246, 0.1);
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(139, 92, 246, 0.2);
+}
+
+.augmentHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.augmentName {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: #fff;
+  margin: 0;
+}
+
+.augmentDescription {
+  font-size: 0.875rem;
+  color: #9ca3af;
+  line-height: 1.5;
+  margin-bottom: 1rem;
+  min-height: 3rem;
+}
+
+.augmentStats {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
+}
+
+.augmentStat {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.augmentStatLabel {
+  font-size: 0.75rem;
+  color: #6b7280;
+}
+
+.augmentStatValue {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #8b5cf6;
+}
+
+/* ========== 파워업 페이지 ========== */
+.powerupInfo {
+  background: rgba(139, 92, 246, 0.05);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  border-left: 4px solid #8b5cf6;
+}
+
+.powerupInfo p {
+  color: #d1d5db;
+  line-height: 1.6;
+  margin: 0.5rem 0;
+  font-size: 0.95rem;
+}
+
+.powerupInfo strong {
+  color: #fff;
+  font-weight: 600;
+}
+
+.powerupCategory {
+  font-size: 0.75rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  background: rgba(139, 92, 246, 0.2);
+  color: #c4b5fd;
+  font-weight: 600;
+  margin-left: auto;
+}
+
+/* ========== Coming Soon ========== */
+.comingSoon {
+  text-align: center;
+  padding: 4rem 2rem;
+  background: rgba(139, 92, 246, 0.05);
+  border-radius: 16px;
+  margin: 2rem 0;
+}
+
+.comingSoonIcon {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+}
+
+.comingSoon h2 {
+  font-size: 2rem;
+  color: #fff;
+  margin-bottom: 0.5rem;
+}
+
+.comingSoon p {
+  font-size: 1.125rem;
+  color: #9ca3af;
+  margin: 0.5rem 0;
+}
+
+.comingSoonHint {
+  font-size: 0.875rem !important;
+  color: #6b7280 !important;
+  font-style: italic;
+}
+
+/* ========== 파워업 리스트 아이템 ========== */
+.powerupListItem {
+  background: rgba(139, 92, 246, 0.05);
+  border-radius: 12px;
+  padding: 1.25rem 1.5rem;
+  transition: all 0.3s ease;
+  border-left: 4px solid #8b5cf6;
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.powerupListItem:hover {
+  background: rgba(139, 92, 246, 0.1);
+  transform: translateX(4px);
+  box-shadow: 0 4px 16px rgba(139, 92, 246, 0.2);
+}
+
+.powerupMainContent {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.powerupChampions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.25rem;
+  min-width: 150px;
+  padding-left: 1.5rem;
+  border-left: 1px solid rgba(139, 92, 246, 0.2);
+}
+
+.powerupChampionsLabel {
+  font-size: 0.75rem;
+  color: #9ca3af;
+  font-weight: 600;
+}
+
+.powerupChampionsText {
+  font-size: 0.875rem;
+  color: #06b6d4;
+  font-weight: 600;
+  text-align: right;
+}
+
